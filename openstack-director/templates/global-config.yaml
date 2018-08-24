@@ -1,0 +1,17 @@
+parameter_defaults:
+  ControllerCount: 3
+  OvercloudControllerFlavor: baremetal
+  
+  ComputeCount: 3
+  OvercloudComputeFlavor: baremetal
+  
+  CephStorageCount: 3
+  OvercloudCephStorageFlavor: baremetal
+  
+  TimeZone: 'Japan'
+  NtpServer: '133.243.238.164'
+
+  NeutronNetworkType: 'vxlan,vlan'
+  NeutronTunnelTypes: 'vxlan'
+
+

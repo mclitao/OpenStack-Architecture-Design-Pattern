@@ -1,0 +1,19 @@
+parameter_defaults:
+  ControllerSchedulerHints:
+    'capabilities:node': 'controller-%index%'
+
+  ComputeSchedulerHints:
+    'capabilities:node': 'compute-%index%'
+
+  CephStorageSchedulerHints:
+    'capabilities:node': 'cephstorage-%index%'
+  HostnameMap:
+    adpcloud-controller-0: ctrl001
+    adpcloud-controller-1: ctrl002
+    adpcloud-controller-2: ctrl003
+    adpcloud-compute-0: kvm001
+    adpcloud-compute-1: kvm002
+    adpcloud-compute-2: kvm003
+    adpcloud-cephstorage-0: ceph001
+    adpcloud-cephstorage-1: ceph002
+    adpcloud-cephstorage-2: ceph003

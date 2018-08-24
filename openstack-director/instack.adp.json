@@ -1,0 +1,85 @@
+{
+    "nodes":[
+        {
+            "name": "ctrl001",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"root",
+            "pm_addr":"192.168.100.11",
+            "capabilities": "profile:control,boot_option:local,node:controller-0",
+            "arch":"x86_64"
+        },
+        {
+            "name": "ctrl002",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"root",
+            "pm_addr":"192.168.100.12",
+            "capabilities": "profile:control,boot_option:local,node:controller-1",
+            "arch":"x86_64"
+        },
+        {
+            "name": "ctrl003",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"root",
+            "pm_addr":"192.168.100.13",
+            "capabilities": "profile:control,boot_option:local,node:controller-2",
+            "arch":"x86_64"
+        },
+        {
+            "name": "kvm001",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"root",
+            "pm_addr":"192.168.100.21",
+            "capabilities": "profile:compute,boot_option:local,node:compute-0",
+            "arch":"x86_64"
+        },
+        {
+            "name": "kvm002",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"root",
+            "pm_addr":"192.168.100.22",
+            "capabilities": "profile:compute,boot_option:local,node:compute-1",
+            "arch":"x86_64"
+        },
+        {
+            "name": "kvm003",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"root",
+            "pm_addr":"192.168.100.23",
+            "capabilities": "profile:compute,boot_option:local,node:compute-2",
+            "arch":"x86_64"
+        },
+        {
+            "name": "ceph001",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"root",
+            "pm_addr":"192.168.100.61",
+            "capabilities": "profile:ceph-storage,boot_option:local,node:cephstorage-0",
+            "arch":"x86_64"
+        },
+        {
+            "name": "ceph002",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"root",
+            "pm_addr":"192.168.100.62",
+            "capabilities": "profile:ceph-storage,boot_option:local,node:cephstorage-1",
+            "arch":"x86_64"
+        },
+        {
+            "name": "ceph003",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"root",
+            "pm_addr":"192.168.100.63",
+            "capabilities": "profile:ceph-storage,boot_option:local,node:cephstorage-2",
+            "arch":"x86_64"
+        }
+    ]
+}

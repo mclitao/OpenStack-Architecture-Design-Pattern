@@ -1,0 +1,71 @@
+# ********************************************************************************
+# DEPRECATED: Use tripleo-heat-templates/environments/ssl/enable-tls.yaml instead.
+# ********************************************************************************
+# Use this environment to pass in certificates for SSL deployments.
+# For these values to take effect, one of the tls-endpoints-*.yaml environments
+# must also be used.
+parameter_defaults:
+  HorizonSecureCookies: True
+  SSLCertificate: |
+    -----BEGIN CERTIFICATE-----
+    MIIEnjCCAoagAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwczELMAkGA1UEBhMCSlAx
+    DjAMBgNVBAgMBVRva3lvMRAwDgYDVQQHDAdTaGlidXlhMRYwFAYDVQQKDA1SZWQg
+    SGF0IEsuIEsuMQswCQYDVQQLDAJTQTEdMBsGA1UEAwwUKi5hZHAubnJ0LnJlZGhh
+    dC5jb20wHhcNMTgwODIyMTY1NDM0WhcNMjgwODE5MTY1NDM0WjBhMQswCQYDVQQG
+    EwJKUDEOMAwGA1UECAwFVG9reW8xFjAUBgNVBAoMDVJlZCBIYXQgSy4gSy4xCzAJ
+    BgNVBAsMAlNBMR0wGwYDVQQDDBQqLmFkcC5ucnQucmVkaGF0LmNvbTCCASIwDQYJ
+    KoZIhvcNAQEBBQADggEPADCCAQoCggEBAJdX584rTPf+zx5prcgo912XTfyoL1OW
+    niyrXDONOa6P49Fds1mmeLsm1wZOg8VUbesAhcaqJdtlnX55iHvs7BlieibyddFM
+    Gy8xtTNknKlFxM5S00PrVKTaFa0Ds9FwHkAJu+pRHUVL9+uLC7+vPHQc7hnvjSy6
+    /pUCPiR3ZHsfv4klvZx5DCXErYysnqb4JvWW0ZUjNA5Qn9YVaVuL9SA5W+46nGLJ
+    oacsC2DtqghrvoH/LXihTFQO7IhOZfKiK7guHbOcOsfJSFFYONOuLYcJQpeiptmP
+    dBAEzz/fDdaAsfAhjNVGsJRWiTYfaABeOpdZEaS1Te9cVTA4mFjkQ2UCAwEAAaNO
+    MEwwCQYDVR0TBAIwADALBgNVHQ8EBAMCBeAwMgYDVR0RBCswKYcECtBR9IINMTAu
+    MjA4LjgxLjI0NIISYWRwLm5ydC5yZWRoYXQuY29tMA0GCSqGSIb3DQEBCwUAA4IC
+    AQBm4qY0liZNXJ0UgUIqBeF/Yp/6tIHS8tsRxwcp1Ek9F3bun+CELtHitHn6PdGb
+    Z1CvG1N7fqc7jXmVAV+kzbnxuZl2G2ozNpv0e6HX5+XwtS8xxwxpTrWQ/gFUJDxb
+    5vrWUXFEhObGPEnoAOHoQjgZTe2lHepOeO720xGIFnSTqcCV5uvAAXD9aNO5TvSo
+    fDqsUxf50+h7nSu7HvaaSJ3U2+TN4yXU4fdvG/BHtcGAWG3PfZH2lNy3/yePXQPW
+    R0aPiUpIpmaqf7rX2BvHQ9QQpJ9kD+jHbtnY5uFVA0T4OAYG3PbL8gFlFIR6t0QD
+    cST0IH270CAsnQzPS0r5hy1ODnPLmG6vpiNFGaByvrfkDDa4q3OADrc3T7zqW2Nk
+    +w79jbwK9rIXTdS+5CWuhlUTrHlASkcLGryGGZ3CU6CXxllhxHFfch2lgiMbRWae
+    V5tMbg9lX/WBPNsmLHHdIx7V2HWQ625BGEykbW8q49wQswBXbhBM4B2OhPAV8QMK
+    aOvZMKg1KPXs8nWPaeemjX4xSK+Frb5C1TDGrqEkglj/Tj4jxNIGXAjasphwfb2E
+    QesbSescIhNYy5pjFGc4bTx/ld9NJU3dFG8DPj0G7bghCmdGpm1x0LCkzT3cJV1o
+    /LmVaL2B0gxpErTYeVlZbCY6PFwx6P7ghQJFCjDnfLnhIg==
+    -----END CERTIFICATE-----
+  SSLIntermediateCertificate: ''
+  SSLKey: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEogIBAAKCAQEAl1fnzitM9/7PHmmtyCj3XZdN/KgvU5aeLKtcM405ro/j0V2z
+    WaZ4uybXBk6DxVRt6wCFxqol22WdfnmIe+zsGWJ6JvJ10UwbLzG1M2ScqUXEzlLT
+    Q+tUpNoVrQOz0XAeQAm76lEdRUv364sLv688dBzuGe+NLLr+lQI+JHdkex+/iSW9
+    nHkMJcStjKyepvgm9ZbRlSM0DlCf1hVpW4v1IDlb7jqcYsmhpywLYO2qCGu+gf8t
+    eKFMVA7siE5l8qIruC4ds5w6x8lIUVg4064thwlCl6Km2Y90EATPP98N1oCx8CGM
+    1UawlFaJNh9oAF46l1kRpLVN71xVMDiYWORDZQIDAQABAoIBABCgd7cOysX0GI0e
+    zxjOZ17A4LCBSbHFOltt+BMx0MR8ymqWAL44q8rj2Xu35IIpZGoNBKVuy/nuj/71
+    GymCPe4MA5+Dw63azqHAtEeRJiTypUyFjPBJSmNSEk+PuJGp36jpaNu1TaHvVq1p
+    +UB14A5hn0b6Kmhfoth8Bpe7Bi8Agqk3x9yCz/e6QeAFnAImdZcvt2qilZZHlFHj
+    wOxu/TNZ1SmAlYYHojFrK2FpafzgWgYDc8j/Fd6MFR+1A82kVDjgkRnKFCYiPklv
+    INc+PDcywViw4tDGzFAiWGSE4D9kIVL3OE32QDgPT0xO55IHUcME/DrH6b/MGL5Q
+    XHdS0YECgYEAx9QSzXZoAk7BmOmMbM9evUgDm0V7GuP9/KElcg7eUmVVUUj1MbAj
+    9vqlVr14ushBhXqQ8j36LZ46DcXNX/wPFijjYt+nzlpDS82CDNTfGDP0xgOXoC8q
+    /xn0MxkF+6rAZmMfCTTffD0W50OPAQKGxBQIfwX3t4XsiZEB83Wh9ssCgYEAweLI
+    YBE1AO6KtCEnKZoST5fEwVIlPvc5OsNxAPbHdkYEvAU1hcTz4YjHrDoKt0afvMjx
+    S9polR+TUUGTGllFpignGpoZeYE1DAdXg2CwzyhzL/CxTSYRgKlQBbiUooRXmBk4
+    ug5ABAuaZKnPaTvj1/6GEzKBH88PWXlX00NtOI8CgYATgUrYjU83snJJN7rCQDeS
+    KD5Z4J1UkZ6QEzaxfGwNBOEgDwwH7paEHBEZd2MacEOdAMq3Kn+KBmDKSV1zmgnq
+    8tDHLOeXR847zvJ7yCeCmEezMFSTiSccQW9JsY6Y8yDWnaRA5M1PtjLPHhQOWC3J
+    Y980buOwIT1mbCYRmpDVowKBgHv9grTk7CePZUZymS/ipukdnqce2FDfG0s4J3E9
+    YCuD9Y0kK6lDXc+SgFbku2ufj5HUU3N11kHfcn+ZVvCXvJHYxcEeYUIx3fG2VEHh
+    ONESBi/XVhuHR9Qm8tTlyK/xwG61WnCpokiz/uV3LvwWX8wGqklml+r2qNNIZWDm
+    kteDAoGAIQ06a+ZL9XWi4z8qqT+VQO2UQKZVzXZ7Y1c1RA9yLmazA3bi4lP+WGkX
+    6MQ2hOFiK8kwAOkDBv9JdhtPwFQVFu46rSrsIVOV1E01eo5mkPZUqg6rzwh0azFp
+    gmiJYBFjp51eJweHu8ICR5guoKkqR8YsnN0unwKwSsdu95wtTXs=
+    -----END RSA PRIVATE KEY-----
+
+  # Disable Gnocchi Incoming redis storage driver when using tls
+  GnocchiIncomingStorageDriver: ''
+
+resource_registry:
+  OS::TripleO::NodeTLSData: /usr/share/openstack-tripleo-heat-templates/puppet/extraconfig/tls/tls-cert-inject.yaml
