@@ -151,7 +151,7 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 
 #### Red Hat OpenStack
 
-| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC (ポート数) | 10G NIC(ポート数) | 備考 |
+| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC<br>(ポート数) | 10G NIC<br>(ポート数) | 備考 |
 |:----------:|:----:|:-----------------:|:----------------:|:----------------|:------------|:-----------------:|:-----------------:|:-----------------|
 | 仮想ホスト | 1 | 8 | 128 | SAS HDD <br> 600 x 2 | SAS/SATA HDD <br> 1024 x 2 | 5 | 0 | Director は、KVMゲストVMとして構築 . <br> 余剰なリソースは、監視サーバ等で利用可能 |
 | Controller | 3 | 8 | 128 | SAS HDD <br> 600 x 2 | N/A | 6 | 6 |  |
@@ -159,7 +159,7 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 
 #### Red Hat Ceph Storage
 
-| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC (ポート数) | 10G NIC <br> (ポート数) | 備考 |
+| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC <br> (ポート数) | 10G NIC <br> (ポート数) | 備考 |
 |:----------:|:----:|:-----------------:|:----------------:|:----------------|:------------|:-----------------:|:-----------------:|:-----------------|
 | ceph-storage | 3 | 16 | 128 | SAS HDD <br> 600 x 2 | <li> journal </li> NVMe SSD <br> 800 x 1 <li> data </li> SATA HDD <br> 8192 x 16 | 4 | 4 | <li> cinder-volume </li> 50,000 GiB <li>  cinder-backup </li> 50,000 GiB <li> ephemeral disk </li> 5,000 GiB <li> image </li> 5,000 GiB <li> metrics </li> 1,000 GiB <li> TOTAL </li> 111,000 GiB <br> <br> 8TB HDDの実効→約 7,200 GiB x 16 = 115,200 GiB <br> <br> NVMeはHDD 12-18本に対して、1本の比率 |
 
@@ -167,7 +167,7 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 
 #### Red Hat OpenStack
 
-| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC (ポート数) | 10G NIC(ポート数) | 備考 |
+| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC <br> (ポート数) | 10G NIC <br> (ポート数) | 備考 |
 |:----------:|:----:|:-----------------:|:----------------:|:----------------|:------------|:-----------------:|:-----------------:|:-----------------|
 | 仮想ホスト | 1 | 8 | 128 | SAS HDD <br> 600 x 2 | SAS/SATA HDD <br> 1024 x 2 | 5 | 0 | Director は、KVMゲストVMとして構築 . <br> 余剰なリソースは、監視サーバ等で利用可能 |
 | Controller | 3 | 4 | 32 | SAS HDD <br> 600 x 2 | N/A | 6 | 6 |  |
@@ -175,7 +175,7 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 
 #### Red Hat Ceph Storage
 
-| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC (ポート数) | 10G NIC(ポート数) | 備考 |
+| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC <br> (ポート数) | 10G NIC <br> (ポート数) | 備考 |
 |:----------:|:----:|:-----------------:|:----------------:|:----------------:|:------------:|:-----------------:|:-----------------:|:-----------------|
 | ceph-storage | 3 | 8 | 64 | SAS HDD <br> 600 x 2 | <li> jounal </li> SAS/SATA SSD <br> 400 x 2 <li> data </li> SATA HDD <br> 8192 x 8 | 4 | 4 | <li> cinder-volume </li> 20,000 GiB <li> cinder-backup </li> 20,000 GiB <li> ephemeral disk </li> 5,000 GiB <li> image </li> 5,000 GiB <li> metrics </li> 1,000 GiB <li> TOTAL </li> 51,000 GiB <br> <br> 8TB HDDの実効→約 7,200 GiB x 8 = 57,600 GiB <br> <br> SAS/SATA SSDはHDD 4-6本に対して、1本の比率 |
 
