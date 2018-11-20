@@ -1,0 +1,12 @@
+parameter_defaults:
+  ControllerSchedulerHints:
+    'capabilities:node': 'controller-%index%'
+
+  ComputeHCISchedulerHints:
+    'capabilities:node': 'osdcompute-%index%'
+
+  HostnameMap:
+    adphci-ctrl-0: ctrl001
+    adphci-hci-0: hci001
+    adphci-hci-1: hci002
+    adphci-hci-2: hci003

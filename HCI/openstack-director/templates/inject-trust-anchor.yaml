@@ -1,0 +1,43 @@
+# ********************************************************************************
+# DEPRECATED: Use tripleo-heat-templates/environments/ssl/inject-trust-anchor.yaml
+# instead.
+# ********************************************************************************
+parameter_defaults:
+  SSLRootCertificate: |
+    -----BEGIN CERTIFICATE-----
+    MIIF0TCCA7mgAwIBAgIJAIBuIgB/sXylMA0GCSqGSIb3DQEBCwUAMH8xCzAJBgNV
+    BAYTAkpQMQ4wDAYDVQQIDAVUb2t5bzEOMAwGA1UEBwwFVG9reW8xDTALBgNVBAoM
+    BFJIS0sxDDAKBgNVBAsMA1NTQTEPMA0GA1UEAwwGYWRwaGNpMSIwIAYJKoZIhvcN
+    AQkBFhN0dXRzdW5vbUByZWRoYXQuY29tMB4XDTE4MDkyODAxNTAwNloXDTM4MDky
+    MzAxNTAwNlowfzELMAkGA1UEBhMCSlAxDjAMBgNVBAgMBVRva3lvMQ4wDAYDVQQH
+    DAVUb2t5bzENMAsGA1UECgwEUkhLSzEMMAoGA1UECwwDU1NBMQ8wDQYDVQQDDAZh
+    ZHBoY2kxIjAgBgkqhkiG9w0BCQEWE3R1dHN1bm9tQHJlZGhhdC5jb20wggIiMA0G
+    CSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDP22xbv9MwMzlp6zjqCmRXqvY0N+Ps
+    LjHb0H6DIWplgDkP5Qf4DdeBSkxI5F2VdQkbsnvUXG/+lpndzB9ssAg1mYIDqcEk
+    B3sUH4OnRKcbvMwDkEGhNbLruxo5byHFGp42p59l82FYytviiRLMipfKsEYJ7vmu
+    nH7geGYZEWb592BPszkrN/m/qAh5QFFzUHopBLw6j72Rsna+J7yPN9jIfN/ScHGN
+    oE3t6YHKuWUVOeuq4lp9f2cz7eLLJIW/6dLELp/Amu7klfMDKuFxQX+5opWgxcWp
+    //827Q/HJWnLiCUtUxXdoqdCtuQWQZPp2nhatVIia1UWjZmPiv8ljqfy3yjO5viS
+    ikPzTQt01dvh8TG0IKRVRQTsjd38K1dfPTrn8ZK8vtLePeLVcajX4TMn++VPHyyu
+    LILIM1IrFk4biKh8w2SPyynF41ttSd8zp+LKhnLBkGuBjIBzvvmbdKtVKBdLC2Nr
+    i3AOL8dMJDjP5ueIgUubguR608Cd8cPDx2xjiohT97pODsOjBD0V6NjUO+tu1NEt
+    uFzJjNo+dYmL1o5Y2dtMrpJXP+zdnKyngVJbhKXU7xqWGjq/Lfr8BMJ5pKMYb6lW
+    Cx+3esxTrT+PrAtA4An3Joy287tDxt1cSVk5Zbr73f9lKhHR9osV7eHbj5p8QDlo
+    NhHapDkURBW9kQIDAQABo1AwTjAdBgNVHQ4EFgQUOeWAi488MyCQfxv6/fMYcRv9
+    NQowHwYDVR0jBBgwFoAUOeWAi488MyCQfxv6/fMYcRv9NQowDAYDVR0TBAUwAwEB
+    /zANBgkqhkiG9w0BAQsFAAOCAgEAj32doWBLaLVuIPJKsDu0OECtQLrW8VGAP8L7
+    wEQCR0vI/UqQqKjsijPZJpEnyEq2hVh8B9YcxCObPUE6mjoDRumZeskinoBfJ74d
+    7MrkKgtwuHWUNo+Ln3sv46aJRj0YFOC/SpVwMlde5hOMGOvbGlJMavNe1nf4SAr3
+    ODeRT9bjULTcBDlSAHPFuxmLiCXai1hPWdsggacLiPt9spQ4ySHj7EWgMignfvY9
+    7hDsShTHPK3u/0xfMtBgq7R5+6ee7uA+D+EphPCMu+AibcLimwZDZB3Y0R3zusGB
+    8LghtYn7Dw4J0+72oquq4c08/YdP4QVvbb3KC/x/gN3pbgHhUMm+HIvF35pm1oX2
+    rFZlccatdBH8ZwyCj2F0Uo31KhuOyQuLkGiXookwtgL+iyLg66mb7kEuo5/j+dAS
+    e32s5wlA9ErxQAskWTVhHt7NtEaxDwiZniIyHOQVPmY5/aq6tB5DMWFVfURnOILT
+    3bPCFr6EWn8A7+I7luaf4VKbKIIN+XkfNgJ3cCZt81l9dOiz2LhPjH4ClsUQ+fvF
+    Gpl0F88cTm7ZflmMq09QBL3fVZsxsaW2LijyhLRJNYx1xhG9p2/6DCp6KNDQPMJH
+    Q+PWzZsN7HvhP/e6p/nqvG/G6+tNLVlY5aKIYox/sr4jmgOWbJVdmFu4xpiuOKex
+    k+/QLM0=
+    -----END CERTIFICATE-----
+
+resource_registry:
+  OS::TripleO::NodeTLSCAData: /usr/share/openstack-tripleo-heat-templates/puppet/extraconfig/tls/ca-inject.yaml

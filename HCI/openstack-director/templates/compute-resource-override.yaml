@@ -1,0 +1,5 @@
+parameter_defaults:
+  ComputeHCIParameters:
+    NovaReservedHostMemory: 55000
+  ComputeHCIExtraConfig:
+    nova::cpu_allocation_ratio: 2.5
