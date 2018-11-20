@@ -7,9 +7,9 @@
 ## OSP13
 
 ### 3.1.stack user 作成
-OpenStackをインストールするため、sudoをパスワード無しで実行できるユーザを作成する。
-実行ホスト:director
-実行ユーザ:root
+OpenStackをインストールするため、sudoをパスワード無しで実行できるユーザを作成する。  
+実行ホスト : director  
+実行ユーザ : root
 
 ```
 [root@director ~]# useradd stack
@@ -19,8 +19,8 @@ OpenStackをインストールするため、sudoをパスワード無しで実�
 ```
 
 ### 3.2.templateとmages用のディレクトリ作成
-実行ホスト:director
-実行ユーザ:stack
+実行ホスト : director  
+実行ユーザ : stack
 
 ```
 [root@director ~]# su - stack
@@ -86,8 +86,8 @@ WARNINGメッセージが出るが無視してOK
 
 正常にインストールされると以下のふたつのファイルが生成される
 
-undercloud-passwords.conf: director サービスの全パスワード一覧
-stackrc: director のコマンドラインツールへアクセスできるようにする初期化変数セット 
+- undercloud-passwords.conf : director サービスの全パスワード一覧  
+- stackrc : director のコマンドラインツールへアクセスできるようにする初期化変数セット
 
 
 ### 3.7.オーバークラウドノードのイメージの取得
@@ -135,11 +135,6 @@ directorにインポートする
 
 (undercloud) [stack@director ~]$ sudo openstack overcloud container image upload \
 --config-file /home/stack/local_registry_images.yaml --verbose
-
-```
-
-確認
-```
 
 ```
 
@@ -268,8 +263,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
 
 
 ### 3.10.オーバークラウドへの設定ファイルの準備
-下記のファイルをgitから入手し
-directorの指定のディレクトリに配置
+下記のファイルを本githubリポジトリ内の ["openstack-director"](./openstack-director) から入手し、directorの指定のディレクトリに配置
 
 ```
 /home/stack/templates
@@ -320,18 +314,22 @@ time openstack overcloud deploy --verbose \
 
 ```
 
+### 3.12.オーバークラウドデプロイの確認
+環境ファイル ```/home/stack/templates/network-environment.yaml``` で設定したパブリックIPアドレスにブラウザでアクセスする。  
+Red Hat OpenStack Platform Dashboardのログイン画面が表示されることを確認する。
 
-確認
-https://10.208.81.244/
+```
+[stack@director ~]$ grep PublicVirtualFixedIPs /home/stack/templates/network-environment.yaml
+#        "PublicVirtualFixedIPs": [
+  PublicVirtualFixedIPs: [{'ip_address':'10.208.81.244'}]
 
-
-
-
-
-
-
-
-
-
-  
-  
+ブラウザで https://10.208.81.244/
+```
+デフォルトの管理者ユーザー名は "admin"  
+admin のパスワードは、オーバークラウドデプロイに成功した際に、/home/stackに作られる変数セットのファイル ""<i>stack_name</i>rc" の中に書かれている。
+```
+[stack@director ~]$ ls *rc
+adpcloudrc  stackrc
+[stack@director ~]$ grep PASSWORD adpcloudrc
+export OS_PASSWORD=kaTvFrTDgJ2Df9mKNFtFfzHAb
+```
