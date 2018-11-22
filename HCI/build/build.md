@@ -4,10 +4,11 @@
 
 
 
-## OSP13
+## OSP13+Ceph 3.0 HCI
 
 ### 3.1.stack user 作成
-OpenStackをインストールするため、sudoをパスワード無しで実行できるユーザを作成する。
+OpenStackをインストールするため、sudoをパスワード無しで実行できるユーザを作成する。  
+
 実行ホスト:director
 実行ユーザ:root
 
@@ -18,7 +19,7 @@ OpenStackをインストールするため、sudoをパスワード無しで実�
 [root@undercloud ~]# chmod 0440 /etc/sudoers.d/stack
 ```
 
-### 3.2.templateとmages用のディレクトリ作成
+### 3.2.templateとimages用のディレクトリ作成
 実行ホスト:director
 実行ユーザ:stack
 
@@ -81,13 +82,13 @@ githubにある「undercloud.conf」を
 ```
 
 undercloud.conf の設定に合わせてサービスが設定される。
-このスクリプトは、完了までに数分かかる。
-WARNINGメッセージが出るが無視してOK
+このスクリプトは、環境に依存して完了までに数分〜数十分かかる。
+WARNINGメッセージが出るが無視してOK。
 
 正常にインストールされると以下のふたつのファイルが生成される
 
 undercloud-passwords.conf: director サービスの全パスワード一覧
-stackrc: director のコマンドラインツールへアクセスできるようにする初期化変数セット 
+stackrc: director のコマンドラインツールへアクセスできるようにする初期化変数セット
 
 
 ### 3.7.オーバークラウドノードのイメージの取得
@@ -99,7 +100,7 @@ directorにインポートする
 ```
 [stack@director ~]$ source ~/stackrc
 
-(undercloud) [stack@director ~]$ sudo yum install rhosp-director-images rhosp-director-images-ipa
+(undercloud) [stack@director ~]$ sudo yum -y install rhosp-director-images rhosp-director-images-ipa
 (undercloud) [stack@director ~]$ cd ~/images
 (undercloud) [stack@director images]$ for i in /usr/share/rhosp-director-images/overcloud-full-latest-13.0.tar /usr/share/rhosp-director-images/ironic-python-agent-latest-13.0.tar; do tar -xvf $i; done
 (undercloud) [stack@director images]$ openstack overcloud image upload --image-path /home/stack/images/
@@ -120,13 +121,17 @@ directorにインポートする
 
 ```
 
-### 3.8.コンテナーイメージのソースの設定
-イメージをローカルレジストリーを設定し、オーバークラウドのコンテナーイメージを保管する
+### 3.8.コンテナイメージのソースの設定
+ローカルレジストリを設定し、オーバークラウドのコンテナーイメージを保管する。  
+`--push-destination`には`<DirectorのIPアドレス>:8787`を指定する。
 
 ```
-(undercloud) [stack@director ~]$ openstack overcloud container image prepare \
+(undercloud) [stack@director ~]$ sudo openstack overcloud container image prepare \
 --namespace=registry.access.redhat.com/rhosp13 \
---push-destination=192.168.110.10:8787 \
+--push-destination=192.168.110.81:8787 \
+-e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-ansible.yaml \
+--set ceph_namespace=registry.access.redhat.com/rhceph \
+--set ceph_image=rhceph-3-rhel7
 --prefix=openstack- \
 --tag-from-label {version}-{release}  \
 --output-env-file=/home/stack/templates/overcloud_images.yaml   \
@@ -138,15 +143,51 @@ directorにインポートする
 
 ```
 
-確認
+
+### 3.9.HCIノード用のFlavorの作成
+HCIノード向けにosdcomputeというFlavorとprofileを作成してマップする。
 ```
+(undercloud) [stack@director-hci ~]$ openstack flavor create --id auto --ram 6144 --disk 40 --vcpus 4 osdcompute
++----------------------------+--------------------------------------+
+| Field                      | Value                                |
++----------------------------+--------------------------------------+
+| OS-FLV-DISABLED:disabled   | False                                |
+| OS-FLV-EXT-DATA:ephemeral  | 0                                    |
+| disk                       | 40                                   |
+| id                         | 46d0c166-fb01-464b-86e2-e24d2b3ef244 |
+| name                       | osdcompute                           |
+| os-flavor-access:is_public | True                                 |
+| properties                 |                                      |
+| ram                        | 6144                                 |
+| rxtx_factor                | 1.0                                  |
+| swap                       |                                      |
+| vcpus                      | 4                                    |
++----------------------------+--------------------------------------+
+(undercloud) [stack@director-hci ~]$ openstack flavor set --property "cpu_arch"="x86_64" --property "capabilities:boot_option"="local" --property "capabilities:profile"="osdcompute" osdcompute
+(undercloud) [stack@director-hci ~]$ openstack flavor show osdcompute
++----------------------------+----------------------------------------------------------------------------------------+
+| Field                      | Value                                                                                  |
++----------------------------+----------------------------------------------------------------------------------------+
+| OS-FLV-DISABLED:disabled   | False                                                                                  |
+| OS-FLV-EXT-DATA:ephemeral  | 0                                                                                      |
+| access_project_ids         | None                                                                                   |
+| disk                       | 40                                                                                     |
+| id                         | 46d0c166-fb01-464b-86e2-e24d2b3ef244                                                   |
+| name                       | osdcompute                                                                             |
+| os-flavor-access:is_public | True                                                                                   |
+| properties                 | capabilities:boot_option='local', capabilities:profile='osdcompute', cpu_arch='x86_64' |
+| ram                        | 6144                                                                                   |
+| rxtx_factor                | 1.0                                                                                    |
+| swap                       |                                                                                        |
+| vcpus                      | 4                                                                                      |
++----------------------------+----------------------------------------------------------------------------------------+
 
 ```
 
-### 3.9.オーバークラウドへのノード登録
+### 3.10.オーバークラウドへのノード登録
 
 JSON形式のファイルにハードウェアの電源管理の情報を記述する。
-雛形としてgithubにある「instack.adp.json」を利用する。
+雛形としてgithubにある「instack.adphci.json」を利用する。
 ハードウェアの設定に依存する部分は環境に合わせる。
 
 ※pm_userおよびpm_passwordはハードウェアの設定に依存する
@@ -159,7 +200,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.11",
+            "pm_addr":"192.168.100.104",
             "capabilities": "profile:control,boot_option:local,node:controller-0",
             "arch":"x86_64"
         },
@@ -168,7 +209,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.12",
+            "pm_addr":"192.168.100.105",
             "capabilities": "profile:control,boot_option:local,node:controller-1",
             "arch":"x86_64"
         },
@@ -177,62 +218,35 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.13",
+            "pm_addr":"192.168.100.106",
             "capabilities": "profile:control,boot_option:local,node:controller-2",
             "arch":"x86_64"
         },
         {
-            "name": "kvm001",
+            "name": "hci001",
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.21",
-            "capabilities": "profile:compute,boot_option:local,node:compute-0",
+            "pm_addr":"192.168.100.101",
+            "capabilities": "profile:osdcompute,boot_option:local,node:osdcompute-0",
             "arch":"x86_64"
         },
         {
-            "name": "kvm002",
+            "name": "hci002",
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.22",
-            "capabilities": "profile:compute,boot_option:local,node:compute-1",
+            "pm_addr":"192.168.100.102",
+            "capabilities": "profile:osdcompute,boot_option:local,node:osdcompute-1",
             "arch":"x86_64"
         },
         {
-            "name": "kvm003",
+            "name": "hci003",
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.23",
-            "capabilities": "profile:compute,boot_option:local,node:compute-2",
-            "arch":"x86_64"
-        },
-        {
-            "name": "ceph001",
-            "pm_type":"pxe_ipmitool",
-            "pm_user":"root",
-            "pm_password":"root",
-            "pm_addr":"192.168.100.61",
-            "capabilities": "profile:ceph-storage,boot_option:local,node:cephstorage-0",
-            "arch":"x86_64"
-        },
-        {
-            "name": "ceph002",
-            "pm_type":"pxe_ipmitool",
-            "pm_user":"root",
-            "pm_password":"root",
-            "pm_addr":"192.168.100.62",
-            "capabilities": "profile:ceph-storage,boot_option:local,node:cephstorage-1",
-            "arch":"x86_64"
-        },
-        {
-            "name": "ceph003",
-            "pm_type":"pxe_ipmitool",
-            "pm_user":"root",
-            "pm_password":"root",
-            "pm_addr":"192.168.100.63",
-            "capabilities": "profile:ceph-storage,boot_option:local,node:cephstorage-2",
+            "pm_addr":"192.168.100.103",
+            "capabilities": "profile:osdcompute,boot_option:local,node:osdcompute-2",
             "arch":"x86_64"
         }
     ]
@@ -243,7 +257,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
 設定情報をインポートする
 
 ```
-(undercloud) [stack@director ~]$ openstack overcloud node import ./instack.adp.json
+(undercloud) [stack@director ~]$ openstack overcloud node import ./instack.adphci.json
 (undercloud) [stack@director ~]$ openstack overcloud node introspect --all-manageable --provide
 ```
 
@@ -257,17 +271,14 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
 | 277bf0bd-f747-4aed-a176-c857a2fe6f27 | ctrl001 | 65f38a9b-a54b-4535-8863-8d7fca0a3431 | power on    | active             | False       |
 | abb31963-fd2f-4684-bdc5-102e1b48772a | ctrl002 | cea19755-786b-4218-b705-cb30e1c63dd5 | power on    | active             | False       |
 | ef61eac3-f7c9-47cf-a094-d48fadefc32c | ctrl003 | 1faea303-a62a-40bf-95ec-1f735a20197a | power on    | active             | False       |
-| 84df391b-bc59-4b4e-bda3-746fd30ed9ca | kvm001  | 828a4927-15a1-4a53-aefd-b113e74895f0 | power on    | active             | False       |
-| 905758c4-3fab-4ca7-a1d5-2a496397fb79 | kvm002  | 1231f55b-645c-4360-b2a0-b83c77ed0410 | power on    | active             | False       |
-| b3b5d7b2-a716-4e0a-be92-8e86874cc973 | kvm003  | 6bb98c39-e196-4e05-a313-72d57958c38a | power on    | active             | False       |
-| 6d100d8c-61e4-4aad-8846-04834ae5140c | ceph001 | 245a861f-9e10-45b8-a32f-c01142641de2 | power on    | active             | False       |
-| 477876b5-c2a1-4e61-b22a-acc69fb621bb | ceph002 | 6da6788b-5263-4635-b821-4a515d07583a | power on    | active             | False       |
-| f2799258-6a46-4c88-b3ae-993a5f792f04 | ceph003 | 8df5d224-71ef-45cf-ad47-e250064616f8 | power on    | active             | False       |
+| 84df391b-bc59-4b4e-bda3-746fd30ed9ca | hci001  | 828a4927-15a1-4a53-aefd-b113e74895f0 | power on    | active             | False       |
+| 905758c4-3fab-4ca7-a1d5-2a496397fb79 | hci002  | 1231f55b-645c-4360-b2a0-b83c77ed0410 | power on    | active             | False       |
+| b3b5d7b2-a716-4e0a-be92-8e86874cc973 | hci003  | 6bb98c39-e196-4e05-a313-72d57958c38a | power on    | active             | False       |
 +--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
 ```
 
 
-### 3.10.オーバークラウドへの設定ファイルの準備
+### 3.11.オーバークラウドへの設定ファイルの準備
 下記のファイルをgitから入手し
 directorの指定のディレクトリに配置
 
@@ -282,7 +293,7 @@ directorの指定のディレクトリに配置
 ```
 
 
-### 3.11.オーバークラウドデプロイ
+### 3.12.オーバークラウドデプロイ
 /home/stack/deploy.shを実行
 
 読み込む設定ファイルの数によって、数十分かかる場合もある。
@@ -293,10 +304,11 @@ deploy.shの内容
 #!/usr/bin/env bash
 if [ $PWD != $HOME ] ; then echo "USAGE: $0 Must be run from $HOME"; exit 1 ; fi
 
-stack_name=adpcloud
+stack_name=adphci
 
 time openstack overcloud deploy --verbose \
  --templates /usr/share/openstack-tripleo-heat-templates \
+ -r /home/stack/templates/roles_data.yaml \
  -e /home/stack/templates/global-config.yaml \
  -e /home/stack/templates/cloud-names.yaml \
  -e /home/stack/templates/enable-tls.yaml \
@@ -313,6 +325,7 @@ time openstack overcloud deploy --verbose \
  -e /home/stack/templates/ips-from-pool-all.yaml \
  -e /home/stack/templates/ceph-storage-environment.yaml \
  -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-ansible.yaml \
+ -e /home/stack/templates/compute-resource-override.yaml \
  --timeout 210 \
  --ntp-server ntp.nict.jp \
  --log-file ./overcloud_deploy.log \
@@ -322,16 +335,4 @@ time openstack overcloud deploy --verbose \
 
 
 確認
-https://10.208.81.244/
-
-
-
-
-
-
-
-
-
-
-  
-  
+https://10.208.81.247/

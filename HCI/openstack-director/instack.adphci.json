@@ -1,0 +1,40 @@
+{
+    "nodes":[
+        {
+            "name": "ctrl001",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"roothci",
+            "pm_addr":"192.168.100.104",
+            "capabilities": "profile:control,boot_option:local,node:controller-0",
+            "arch":"x86_64"
+        },
+        {
+            "name": "hci001",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"roothci",
+            "pm_addr":"192.168.100.101",
+            "capabilities": "profile:osdcompute,boot_option:local,node:osdcompute-0",
+            "arch":"x86_64"
+        },
+        {
+            "name": "hci002",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"roothci",
+            "pm_addr":"192.168.100.102",
+            "capabilities": "profile:osdcompute,boot_option:local,node:osdcompute-1",
+            "arch":"x86_64"
+        },
+        {
+            "name": "hci003",
+            "pm_type":"pxe_ipmitool",
+            "pm_user":"root",
+            "pm_password":"roothci",
+            "pm_addr":"192.168.100.103",
+            "capabilities": "profile:osdcompute,boot_option:local,node:osdcompute-2",
+            "arch":"x86_64"
+        }
+    ]
+}

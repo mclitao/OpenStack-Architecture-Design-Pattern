@@ -46,24 +46,24 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 |  |   | * rhel-7-server-extras-rpms |  | |
 |  |   | * rhel-7-server-rh-common-rpms |  | |
 |  |   | * rhel-ha-for-rhel-7-server-rpms |  | |
-|  | * Red Hat OpenStack Platform 13  | * rhel-7-server-openstack-13-rpms |  | |
-|  | * Red Hat Ceph Storage 3.0  | * rhel-7-server-rhceph-3-tools-rpms |  | |
+|  | * Red Hat OpenStack Platform 13  | * rhel-7-server-openstack-13-rpms |  | | 
+|  | * Red Hat ceph Storage 3.0  | * rhel-7-server-rhceph-3-tools-rpms |  | | 
 | Controller | * Red Hat Enterprise Linux 7.5 | * rhel-7-server-rpms | XXXXX | xxxx |
 |  |   | * rhel-7-server-extras-rpms |  | |
 |  |   | * rhel-7-server-rh-common-rpms |  | |
 |  |   | * rhel-ha-for-rhel-7-server-rpms |  | |
-|  | * Red Hat OpenStack Platform 13  | * rhel-7-server-openstack-13-rpms |  | |
-|  | * Red Hat Ceph Storage 3.0  | * rhel-7-server-rhceph-3-mon-rpms |  | |
-|  |   | * rhel-7-server-rhceph-3-tools-rpms |  | |
+|  | * Red Hat OpenStack Platform 13  | * rhel-7-server-openstack-13-rpms |  | | 
+|  | * Red Hat ceph Storage 3.0  | * rhel-7-server-rhceph-3-mon-rpms |  | | 
+|  |   | * rhel-7-server-rhceph-3-tools-rpms |  | | 
 | Compute | * Red Hat Enterprise Linux 7.5 | * rhel-7-server-rpms | XXXXX | xxxx |
 |  |   | * rhel-7-server-extras-rpms |  | |
 |  |   | * rhel-7-server-rh-common-rpms |  | |
-|  | * Red Hat OpenStack Platform 13  | * rhel-7-server-openstack-13-rpms |  | |
-|  | * Red Hat Ceph Storage 3.0  | * rhel-7-server-rhceph-3-tools-rpms |  | |
+|  | * Red Hat OpenStack Platform 13  | * rhel-7-server-openstack-13-rpms |  | | 
+|  | * Red Hat ceph Storage 3.0  | * rhel-7-server-rhceph-3-tools-rpms |  | | 
 | ceph storage | * Red Hat Enterprise Linux 7.5 | * rhel-7-server-rpms | XXXXX | xxxx |
 |  |   | * rhel-7-server-extras-rpms |  | |
 |  |   | * rhel-7-server-rh-common-rpms |  | |
-|  | * Red Hat Ceph Storage 3.0  | * rhel-7-server-rhceph-3-osd-rpms |  | |
+|  | * Red Hat ceph Storage 3.0  | * rhel-7-server-rhceph-3-osd-rpms |  | | 
 
 ### OpenStack 可用性の考え方
 
@@ -93,14 +93,14 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 
 #### ネットワーク構成
 
-| セグメント名 | VLAN ID | Network CIDR | 10G or 1G | 冗長化 | 説明 | director | controller | compute | ceph storage |
-| :----------: | :-----: | :---------: | :----: | :------: | :------ | :-----: | :-----: | :-----: | :-----: |
+| セグメント名 | VLAN ID | Network CIDR | 10G or 1G | 冗長化 |           説明 | director | controller | compute | ceph storage |
+| :----------: | :-----: |  :---------: |  :----: | :------: |:------ | :-----: | :-----: | :-----: | :-----: | :-----: |
 | External | 101 | 10.0.0.0/16 | 1G | ◯ | ダッシュボードへのアクセスや仮想インスタンスに対するFloating IPを提供する | ◯ | ◯ | - | - |
 | Internal API | 201 | 192.168.10.0/24 | 1G | ◯ | OpenStack サービス間の内部通信に使用する。内部APIアクセス、RPC 、DBコネクション等 | - | ◯ | ◯ | ◯ |
-| Tenant | 202 | 192.168.20.0/24 | 10G | ◯ | クラウド利用者に対し、テナント内部のプライベートネットワークをオーバレイさせる。| - | ◯ | ◯ | - |
-| Storage | 203 | 192.168.30.0/24 | 10G | ◯ | ゲストVMのBlock Volumeアクセス等、Ceph クラスターへのアクセスに使用する。 | - | ◯ | ◯ | ◯ |
-| Storage Management | 204 | 192.168.40.0/24 | 10G | ◯ | Object Store サービスや、Ceph クラスターの内部同期通信に使用する| - | ◯ | - | ◯ |
-| IPMI | 300 | 192.168.100.0/24 | 1G |  | ベアメタルサーバ(controller , compute , ceph-storage )に対し、電源コントロール等を行う. <br>  構築時のPXEブート電源コントロール <br>  pacemaker のstonith  | ◯ | ◯ [1] | ◯ [1] | ◯ [1] |
+| Tenant | 202 | 192.168.20.0/24 | 10G | ◯ | クラウド利用者に対し、テナント内部のプライベートネットワークをオーバレイさせる。| - | ◯ | ◯ | - | 
+| Storage | 203 | 192.168.30.0/24 | 10G | ◯ | ゲストVMのBlock Volumeアクセス等、ceph クラスターへのアクセスに使用する。 | - | ◯ | ◯ | ◯ |
+| Storage Management | 204 | 192.168.40.0/24 | 10G | ◯ | Object Store サービスや、ceph クラスターの内部同期通信に使用する| - | ◯ | - | ◯ |
+| IPMI | 300 | 192.168.100.0/24 | 1G |  | ベアメタルサーバ(controller , compute , ceph )に対し、電源コントロール等を行う. <br> * 構築時のPXEブート電源コントロール <br> * pacemaker のstonith  | ◯ | ◯[1] | ◯[1] | ◯[1] |
 | Provisioning | 301 | 192.168.110.0/24 | 1G |  |  構築時や構成変更時に、Director(undercloud) から、各ベアメタルサーバに対し、アクセスを行う | ◯ | ◯ | ◯ | ◯ |
 | Management | 302 | 192.168.120.0/24 | 1G |  | システム管理者が、運用管理においてベアメタルサーバに対し、ssh 接続を行う  | ◯ | ◯ | ◯ | ◯ |
 
@@ -112,10 +112,10 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 
 | 構成パターン | 想定条件 | 10G 集約 | 10G 分離 | 1G 集約 | 1G 分離 |
 | :----------: | :------ | :------ | :------ | :----- | :----- |
-| 最小構成 | クラウドの利用者の、内部外部の通信量並びに、<br> ディスクアクセスが穏やかで、ネットワーク干渉<br>による速度低下も許容させる | <ul> <li> Internal API </li> <li> Tenant </li> <li> Storage </li> <li> Storage Management </li> </ul> | - | - | <ul> <li> External </li> <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
-| 集約構成 | ネットワーク干渉による速度低下がある程度<br>許容させるが、DBのような比較的ディスク<br>アクセスが多いワークロードが配置される | <ul> <li> Group1 <ul> <li> Internal API </li> <li> Tenant </li> </ul> <li> Group2 <ul> <li> Storage </li> <li> Storage Management </li> </ul> </li> </ul> | - | - | <ul> <li> External </li> <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
-| 占有構成 | ネットワークトラヒックおよびディスク<br>アクセスにおいて、できるだけ速度低下を回避する | - | <ul> <li> Tenant </li> <li> Storage </li> <li> Storage Management </li> </ul> | - | <ul> <li> External </li> <li> Internal API </li>  <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
-| 高許容構成 | 利用規模の拡大、ワークロードのバリ<br>エーションに対して、許容度の高い構成 | - | <ul> <li> External </li> <li> Internal API </li> <li> Tenant </li> <li> Storage </li> <li> Storage Management </ul> | - | <ul> <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
+| 最小構成 | クラウドの利用者の、内部外部の通信量並びに、<br> ディスクアクセスが穏やかで、ネットワーク干渉<br>による速度低下も許容させる | * Internal API <br> * Tenant <br> * Storage <br> * Storage Management | - | - | * External <br> * IPMI <br> * Provisioning <br> * management |
+| 集約構成 | ネットワーク干渉による速度低下がある程度<br>許容させるが、DBのような比較的ディスク<br>アクセスが多いワークロードが配置される | * Group1 { * Internal API & Tenant } <br> * Group2 { Storage & <br> Storage Management } | - | - | * External <br> * IPMI <br> * Provisioning <br> * management |
+| 占有構成 | ネットワークトラヒックおよびディスク<br>アクセスにおいて、できるだけ速度低下を回避する | - | * Tenant <br> * Storage <br> * Storage Management | - | * External <br> * Internal API * IPMI <br> * Provisioning <br> * management |
+| 高許容構成 | 利用規模の拡大、ワークロードのバリ<br>エーションに対して、許容度の高い構成 | - | * External <br> * Internal API * Tenant <br> * Storage <br> * Storage Management | - | * IPMI <br> * Provisioning <br> * management |
 
 
 ### 環境定義 および 想定サイジング
@@ -137,7 +137,7 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
   * RAM : 4 GB
   * HDD : 40GB ( system )
   * HDD : 100GB ( data )
-* ゲストVM数 : 500VM
+* ゲストVM数 : 500VM 
   * 1システム（アプリケーション）の平均的なサーバ台数を5台として、100システム程度の規模間
 
 尚、同時にビジーなゲストVMの数は、15％程度と想定しています。computeノードのサイジングに於ては、オーバーコミットについて、下記、を設定しています。
@@ -149,38 +149,38 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 
 ### システム構成情報（本番環境)
 
-#### Red Hat OpenStack
+#### Red Hat OpenStack 
 
-| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC<br>(ポート数) | 10G NIC<br>(ポート数) | 備考 |
-|:----------:|:----:|:-----------------:|:----------------:|:----------------|:------------|:-----------------:|:-----------------:|:-----------------|
+| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC (ポート数) | 10G NIC(ポート数) | 備考 |
+|:----------:|:----:|:-----------------:|:----------------:|:----------------:|:------------:|:-----------------:|:-----------------:|:-----------------|
 | 仮想ホスト | 1 | 8 | 128 | SAS HDD <br> 600 x 2 | SAS/SATA HDD <br> 1024 x 2 | 5 | 0 | Director は、KVMゲストVMとして構築 . <br> 余剰なリソースは、監視サーバ等で利用可能 |
 | Controller | 3 | 8 | 128 | SAS HDD <br> 600 x 2 | N/A | 6 | 6 |  |
 | Compute | 3 | 24 | 768 | SAS HDD <br>  600 x 2 | N/A | 4 | 6 | より大規模な環境とする場合、CPUコア数、メモリ搭載量を増加させる。  |
 
-#### Red Hat Ceph Storage
+#### Red Hat ceph storage
 
-| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC <br> (ポート数) | 10G NIC <br> (ポート数) | 備考 |
-|:----------:|:----:|:-----------------:|:----------------:|:----------------|:------------|:-----------------:|:-----------------:|:-----------------|
-| ceph-storage | 3 | 16 | 128 | SAS HDD <br> 600 x 2 | <li> journal </li> NVMe SSD <br> 800 x 1 <li> data </li> SATA HDD <br> 8192 x 16 | 4 | 4 | <li> cinder-volume </li> 50,000 GiB <li>  cinder-backup </li> 50,000 GiB <li> ephemeral disk </li> 5,000 GiB <li> image </li> 5,000 GiB <li> metrics </li> 1,000 GiB <li> TOTAL </li> 111,000 GiB <br> <br> 8TB HDDの実効→約 7,200 GiB x 16 = 115,200 GiB <br> <br> NVMeはHDD 12-18本に対して、1本の比率 |
+| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC (ポート数) | 10G NIC(ポート数) | 備考 |
+|:----------:|:----:|:-----------------:|:----------------:|:----------------:|:------------:|:-----------------:|:-----------------:|:-----------------|
+| ceph-Storage | 3 | 16 | 128 | SAS HDD <br> 600 x 2 | jounal:NVMe SSD 800 x 1 <br> data:SATA HDD 8192 x 16 | 4 | 4 | * cinder-volume 50,000 GiB <br> * cinder-backup 50,000 GiB <br> * ephemeral disk 5,000 GiB <br> * image 5,000 GiB <br> * gnocchi metrics 1,000 GiB <br> TOTAL:111,000 GiB <br> <br> 8TB HDDの実効→約 7,200 GiB x 16 = 115,200 GiB <br> - NVMeのbest practiceはHDD 12-18本に対して、1本の比率 |
 
 ### システム構成情報（検証環境)
 
-#### Red Hat OpenStack
+#### Red Hat OpenStack 
 
-| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC <br> (ポート数) | 10G NIC <br> (ポート数) | 備考 |
-|:----------:|:----:|:-----------------:|:----------------:|:----------------|:------------|:-----------------:|:-----------------:|:-----------------|
+| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC (ポート数) | 10G NIC(ポート数) | 備考 |
+|:----------:|:----:|:-----------------:|:----------------:|:----------------:|:------------:|:-----------------:|:-----------------:|:-----------------|
 | 仮想ホスト | 1 | 8 | 128 | SAS HDD <br> 600 x 2 | SAS/SATA HDD <br> 1024 x 2 | 5 | 0 | Director は、KVMゲストVMとして構築 . <br> 余剰なリソースは、監視サーバ等で利用可能 |
 | Controller | 3 | 4 | 32 | SAS HDD <br> 600 x 2 | N/A | 6 | 6 |  |
 | Compute | 2 | 4 | 32 | SAS HDD <br>  600 x 2 | N/A | 4 | 6 | より大規模な環境とする場合、CPUコア数、メモリ搭載量を増加させる。  |
 
-#### Red Hat Ceph Storage
+#### Red Hat ceph storage
 
-| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC <br> (ポート数) | 10G NIC <br> (ポート数) | 備考 |
+| サーバ役割 | 台数 | x86_64 CPU コア数 | メモリ搭載量(GB) | システムHDD (GB) | 追加HDD (GB) | 1G NIC (ポート数) | 10G NIC(ポート数) | 備考 |
 |:----------:|:----:|:-----------------:|:----------------:|:----------------:|:------------:|:-----------------:|:-----------------:|:-----------------|
-| ceph-storage | 3 | 8 | 64 | SAS HDD <br> 600 x 2 | <li> jounal </li> SAS/SATA SSD <br> 400 x 2 <li> data </li> SATA HDD <br> 8192 x 8 | 4 | 4 | <li> cinder-volume </li> 20,000 GiB <li> cinder-backup </li> 20,000 GiB <li> ephemeral disk </li> 5,000 GiB <li> image </li> 5,000 GiB <li> metrics </li> 1,000 GiB <li> TOTAL </li> 51,000 GiB <br> <br> 8TB HDDの実効→約 7,200 GiB x 8 = 57,600 GiB <br> <br> SAS/SATA SSDはHDD 4-6本に対して、1本の比率 |
+| ceph-Storage | 3 | 8 | 64 | SAS HDD <br> 600 x 2 | jounal:SSD 400 x 2 <br> data:SATA HDD 8192 x 8 | 4 | 4 | * cinder-volume 20,000 GiB <br> * cinder-backup 20,000 GiB <br> * ephemeral disk 5,000 GiB <br> * image 5,000 GiB <br> * gnocchi metrics 1,000 GiB <br> TOTAL:51,000 GiB <br><br> 8TB HDDの実効→約 7,200 GiB x 8 = 57,600 GiB <br> - SSDのbest practiceはHDD 4-6本に対して、1本の比率 |
 
 
-### Ceph Storage ディスクレイアウト設計
+### ceph Storage ディスクレイアウト設計
 
 ![ cephディスクレイアウト ](./images/image0003.png)
 
