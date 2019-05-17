@@ -1,10 +1,6 @@
+## 2.環境情報
 
-# Undercloud/OverCloud用ハードウェア設定
-# Director用仮想サーバ作成
-
-
-
-## OSP13
+## 3.undercloud ( director ) の構築
 
 ### 3.1.stack user 作成
 OpenStackをインストールするため、sudoをパスワード無しで実行できるユーザを作成する。  
@@ -43,7 +39,7 @@ director.adp.local
 [stack@director ~]$ sudo hostnamectl set-hostname director.adp.local
 [stack@director ~]$ sudo hostnamectl set-hostname --transient director.adp.local
 ```
-### 3.4.サブスクリプション登録と必要なレジストリーの有効化
+### 3.4.サブスクリプション登録と必要なリポジトリの有効化
 
 ```
 [stack@director ~]$ sudo subscription-manager register
@@ -73,8 +69,7 @@ Ceph Storageノードを使うためのツールのインストール
 
 ### 3.6.directorのインストール
 
-githubにある「undercloud.conf」を
-/home/stackに配置した後、以下のコマンドを実行する。
+githubにある[undercloud.conf](https://github.com/toaraki/OpenStack-Architecture-Design-Pattern-1/blob/master/EntPrivateCloudWithManila/openstack-director/undercloud.conf)を/home/stackに配置した後、以下のコマンドを実行する。
 
 ```
 [stack@director ~]$ openstack undercloud install
@@ -119,6 +114,8 @@ directorにインポートする
 +--------------------------------------+------------------------+--------+
 
 ```
+
+## undercloud ( director ) の構築
 
 ### 3.8.コンテナーイメージのソースの設定
 イメージをローカルレジストリーを設定し、オーバークラウドのコンテナーイメージを保管する
