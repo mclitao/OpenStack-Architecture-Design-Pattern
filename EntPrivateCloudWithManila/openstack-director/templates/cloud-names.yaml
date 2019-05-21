@@ -1,9 +1,9 @@
 # Defines the cloud names based on parameters given.
 
 parameter_defaults:
-  CloudName: adp.nrt.redhat.com
-  CloudNameInternal: internal.adp.nrt.redhat.com
-  CloudNameStorage: storage.adp.nrt.redhat.com
-  CloudNameStorageManagement: storagemgmt.adp.nrt.redhat.com
-  CloudNameCtlplane: ctlplane.adp.nrt.redhat.com
-  CloudDomain: adpn.nrt.redhat.com
+  CloudName: adp.local
+  CloudNameInternal: internal.adp.local
+  CloudNameStorage: storage.adp.local
+  CloudNameStorageManagement: storagemgmt.adp.local
+  CloudNameCtlplane: ctlplane.adp.local
+  CloudDomain: adpn.local

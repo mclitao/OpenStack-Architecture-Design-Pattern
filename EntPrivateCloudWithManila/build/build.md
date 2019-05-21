@@ -1,8 +1,17 @@
-## 2.環境情報
+# OpenStack Platform の構築
 
-## 3.undercloud ( director ) の構築
+## 1. undercloud ( director ) の構築
 
-### 3.1.stack user 作成
+### 1.1 director ホストのOSインストール＆セットアップ
+
+RHEL をインストールし、Network の設定を行う。
+
+* IPアドレス設定が必要なネットワーク
+  * External ( 10.0.0.0/16)
+  * Management ( 192.168.120.0/24 )
+  * IPMI ( 192.168.100.0/24 )
+
+### 1.2 stack user 作成
 OpenStackをインストールするため、sudoをパスワード無しで実行できるユーザを作成する。  
 実行ホスト : director  
 実行ユーザ : root
@@ -14,7 +23,7 @@ OpenStackをインストールするため、sudoをパスワード無しで実�
 [root@undercloud ~]# chmod 0440 /etc/sudoers.d/stack
 ```
 
-### 3.2.templateとmages用のディレクトリ作成
+### 1.3 templateとmages用のディレクトリ作成
 実行ホスト : director  
 実行ユーザ : stack
 
@@ -24,7 +33,7 @@ OpenStackをインストールするため、sudoをパスワード無しで実�
 [stack@director ~]$　mkdir ~/images
 ```
 
-### 3.3.hostname の確認
+### 1.4 hostname の確認
 
 ```
 [stack@director ~]$ hostname
@@ -39,7 +48,7 @@ director.adp.local
 [stack@director ~]$ sudo hostnamectl set-hostname director.adp.local
 [stack@director ~]$ sudo hostnamectl set-hostname --transient director.adp.local
 ```
-### 3.4.サブスクリプション登録と必要なリポジトリの有効化
+### 1.5 サブスクリプション登録と必要なリポジトリの有効化
 
 ```
 [stack@director ~]$ sudo subscription-manager register
@@ -57,7 +66,7 @@ Pool ID:             XXXXXXXXXXXXXXXXXX
 [stack@director ~]$ sudo reboot
 ```
 
-### 3.5.director パッケージのインストール
+### 1.6 director パッケージのインストール
 
 director のインストールと設定を行うためのコマンドラインツールと
 Ceph Storageノードを使うためのツールのインストール
@@ -67,7 +76,7 @@ Ceph Storageノードを使うためのツールのインストール
 [stack@director ~]$ sudo yum install -y ceph-ansible
 ```
 
-### 3.6.directorのインストール
+### 1.7 directorのインストール
 
 githubにある[undercloud.conf](https://github.com/toaraki/OpenStack-Architecture-Design-Pattern-1/blob/master/EntPrivateCloudWithManila/openstack-director/undercloud.conf)を/home/stackに配置した後、以下のコマンドを実行する。
 
@@ -84,9 +93,9 @@ WARNINGメッセージが出るが無視してOK
 - undercloud-passwords.conf : director サービスの全パスワード一覧  
 - stackrc : director のコマンドラインツールへアクセスできるようにする初期化変数セット
 
+### 1.8 オーバークラウドノードのイメージの取得
 
-### 3.7.オーバークラウドノードのイメージの取得
-
+#### イメージインポートの実施
 stackrc ファイルを読み込んで、director のコマンドラインツールを有効にして
 オーバークラウドのイメージをホームディレクトリの~imagesに展開し
 directorにインポートする
@@ -100,7 +109,7 @@ directorにインポートする
 (undercloud) [stack@director images]$ openstack overcloud image upload --image-path /home/stack/images/
 ```
 
-インポートの確認（出力例）
+#### インポートの確認（出力例）
 ```
 (undercloud) [stack@director ~]$ openstack image list
 +--------------------------------------+------------------------+--------+
@@ -115,30 +124,14 @@ directorにインポートする
 
 ```
 
-## undercloud ( director ) の構築
+## 2 オーバークラウドの構築
 
-### 3.8.コンテナーイメージのソースの設定
-イメージをローカルレジストリーを設定し、オーバークラウドのコンテナーイメージを保管する
+### 2.1 オーバークラウドへのノード登録
 
-```
-(undercloud) [stack@director ~]$ openstack overcloud container image prepare \
---namespace=registry.access.redhat.com/rhosp13 \
---push-destination=192.168.110.10:8787 \
---prefix=openstack- \
---tag-from-label {version}-{release}  \
---output-env-file=/home/stack/templates/overcloud_images.yaml   \
---output-images-file /home/stack/local_registry_images.yaml
-
-
-(undercloud) [stack@director ~]$ sudo openstack overcloud container image upload \
---config-file /home/stack/local_registry_images.yaml --verbose
-
-```
-
-### 3.9.オーバークラウドへのノード登録
+#### bearemetal 登録用 JSONファイルの作成
 
 JSON形式のファイルにハードウェアの電源管理の情報を記述する。
-雛形としてgithubにある「instack.adp.json」を利用する。
+雛形としてgithubにある「[instack.adp.json](https://github.com/toaraki/OpenStack-Architecture-Design-Pattern-1/blob/master/EntPrivateCloudWithManila/openstack-director/instack.adp.json)」を利用する。
 ハードウェアの設定に依存する部分は環境に合わせる。
 
 ※pm_userおよびpm_passwordはハードウェアの設定に依存する
@@ -151,7 +144,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.11",
+            "pm_addr":"192.168.100.24",
             "capabilities": "profile:control,boot_option:local,node:controller-0",
             "arch":"x86_64"
         },
@@ -160,7 +153,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.12",
+            "pm_addr":"192.168.100.25",
             "capabilities": "profile:control,boot_option:local,node:controller-1",
             "arch":"x86_64"
         },
@@ -169,7 +162,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.13",
+            "pm_addr":"192.168.100.26",
             "capabilities": "profile:control,boot_option:local,node:controller-2",
             "arch":"x86_64"
         },
@@ -178,7 +171,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.21",
+            "pm_addr":"192.168.100.32",
             "capabilities": "profile:compute,boot_option:local,node:compute-0",
             "arch":"x86_64"
         },
@@ -187,7 +180,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.22",
+            "pm_addr":"192.168.100.33",
             "capabilities": "profile:compute,boot_option:local,node:compute-1",
             "arch":"x86_64"
         },
@@ -196,7 +189,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.23",
+            "pm_addr":"192.168.100.34",
             "capabilities": "profile:compute,boot_option:local,node:compute-2",
             "arch":"x86_64"
         },
@@ -205,7 +198,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.61",
+            "pm_addr":"192.168.100.232",
             "capabilities": "profile:ceph-storage,boot_option:local,node:cephstorage-0",
             "arch":"x86_64"
         },
@@ -214,7 +207,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.62",
+            "pm_addr":"192.168.100.233",
             "capabilities": "profile:ceph-storage,boot_option:local,node:cephstorage-1",
             "arch":"x86_64"
         },
@@ -223,7 +216,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
             "pm_type":"pxe_ipmitool",
             "pm_user":"root",
             "pm_password":"root",
-            "pm_addr":"192.168.100.63",
+            "pm_addr":"192.168.100.234",
             "capabilities": "profile:ceph-storage,boot_option:local,node:cephstorage-2",
             "arch":"x86_64"
         }
@@ -232,7 +225,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
 ```
 
 
-設定情報をインポートする
+#### 設定情報をインポートする
 
 ```
 (undercloud) [stack@director ~]$ openstack overcloud node import ./instack.adp.json
@@ -240,7 +233,7 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
 ```
 
 
-登録の確認
+#### 登録の確認
 ```
 (undercloud) [stack@director ~]$ openstack baremetal node list
 +--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
@@ -259,8 +252,8 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
 ```
 
 
-### 3.10.オーバークラウドへの設定ファイルの準備
-下記のファイルを本githubリポジトリ内の ["openstack-director"](./openstack-director) から入手し、directorの指定のディレクトリに配置
+### 2.2 オーバークラウドへの設定ファイルの準備
+下記のファイルを本githubリポジトリ内の ["openstack-director"](https://github.com/toaraki/OpenStack-Architecture-Design-Pattern-1/tree/master/EntPrivateCloudWithManila/openstack-director) から入手し、directorの指定のディレクトリに配置
 
 ```
 /home/stack/templates
@@ -272,27 +265,21 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
 /home/stack/templates/ports
 ```
 
-
-### 3.11.オーバークラウドデプロイ
-/home/stack/deploy.shを実行
-
-読み込む設定ファイルの数によって、数十分かかる場合もある。
-
-deploy.shの内容
+### 2.3 コンテナーイメージのソースの設定
+イメージをローカルレジストリーを設定し、オーバークラウドのコンテナーイメージを保管する.
+* ["openstack-director/container-image-prepare.sh"](https://github.com/toaraki/OpenStack-Architecture-Design-Pattern-1/blob/master/EntPrivateCloudWithManila/openstack-director/container-image-prepare.sh)
 
 ```
-#!/usr/bin/env bash
-if [ $PWD != $HOME ] ; then echo "USAGE: $0 Must be run from $HOME"; exit 1 ; fi
-
-stack_name=adpcloud
-
-time openstack overcloud deploy --verbose \
- --templates /usr/share/openstack-tripleo-heat-templates \
+(undercloud) [stack@director ~]$ openstack overcloud container image prepare \
+ --namespace=registry.access.redhat.com/rhosp13 \
+ --push-destination=192.168.110.1:8787 \
+ --prefix=openstack- \
+ --tag-from-label {version}-{release}  \
+ --output-env-file=/home/stack/templates/overcloud_images.yaml \
+ --output-images-file /home/stack/local_registry_images.yaml \
+ -e /home/stack/templates/roles_data.yaml \
  -e /home/stack/templates/global-config.yaml \
  -e /home/stack/templates/cloud-names.yaml \
- -e /home/stack/templates/enable-tls.yaml \
- -e /usr/share/openstack-tripleo-heat-templates/environments/tls-endpoints-public-ip.yaml \
- -e /home/stack/templates/inject-trust-anchor.yaml \
  -e /home/stack/templates/scheduler_hints_env.yaml \
  -e /usr/share/openstack-tripleo-heat-templates/environments/docker.yaml \
  -e /usr/share/openstack-tripleo-heat-templates/environments/docker-ha.yaml  \
@@ -304,6 +291,52 @@ time openstack overcloud deploy --verbose \
  -e /home/stack/templates/ips-from-pool-all.yaml \
  -e /home/stack/templates/ceph-storage-environment.yaml \
  -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-ansible.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-mds.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/manila-cephfsganesha-config.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/cinder-backup.yaml
+
+...
+
+(undercloud) [stack@director ~]$ sudo openstack overcloud container image upload \
+--config-file /home/stack/local_registry_images.yaml --verbose
+
+```
+
+### 2.4 オーバークラウドデプロイ
+[/home/stack/deploy.sh](https://github.com/toaraki/OpenStack-Architecture-Design-Pattern-1/blob/master/EntPrivateCloudWithManila/openstack-director/deploy.sh)を実行する。
+
+読み込む設定ファイルの数や、マシンスペックによって、60〜90分程度かかる場合がある。
+
+deploy.shの内容
+
+```
+#!/usr/bin/env bash
+if [ $PWD != $HOME ] ; then echo "USAGE: $0 Must be run from $HOME"; exit 1 ; fi
+
+stack_name=adpcloud
+
+source ~/stackrc
+
+time openstack overcloud deploy --verbose \
+ --templates /usr/share/openstack-tripleo-heat-templates \
+ -n /usr/share/openstack-tripleo-heat-templates/network_data_ganesha.yaml \
+ -e /home/stack/templates/roles_data.yaml \
+ -e /home/stack/templates/global-config.yaml \
+ -e /home/stack/templates/cloud-names.yaml \
+ -e /home/stack/templates/scheduler_hints_env.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/docker.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/docker-ha.yaml  \
+ -e /home/stack/templates/overcloud_images.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/net-bond-with-vlans.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/network-management.yaml  \
+ -e /home/stack/templates/network-environment.yaml \
+ -e /home/stack/templates/ips-from-pool-all.yaml \
+ -e /home/stack/templates/ceph-storage-environment.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-ansible.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-mds.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/manila-cephfsganesha-config.yaml \
+ -e /usr/share/openstack-tripleo-heat-templates/environments/cinder-backup.yaml \
  --timeout 210 \
  --ntp-server ntp.nict.jp \
  --log-file ./overcloud_deploy.log \
@@ -311,18 +344,24 @@ time openstack overcloud deploy --verbose \
 
 ```
 
-### 3.12.オーバークラウドデプロイの確認
+### 2.5 オーバークラウドデプロイの確認
+
 環境ファイル ```/home/stack/templates/network-environment.yaml``` で設定したパブリックIPアドレスにブラウザでアクセスする。  
-Red Hat OpenStack Platform Dashboardのログイン画面が表示されることを確認する。
+
+Webブラウザで、Red Hat OpenStack Platform Dashboardのログイン画面が表示されることを確認する。
 
 ```
 [stack@director ~]$ grep PublicVirtualFixedIPs /home/stack/templates/network-environment.yaml
-#        "PublicVirtualFixedIPs": [
-  PublicVirtualFixedIPs: [{'ip_address':'10.208.81.244'}]
 
-ブラウザで https://10.208.81.244/
+  PublicVirtualFixedIPs: [{'ip_address':'10.0.255.248'}]
+
 ```
+
+* ブラウザで https://10.208.81.244/ へアクセスする。
+
 デフォルトの管理者ユーザー名は "admin"  
+
+* adminパスワードの確認
 admin のパスワードは、オーバークラウドデプロイに成功した際に、/home/stackに作られる変数セットのファイル ""<i>stack_name</i>rc" の中に書かれている。
 ```
 [stack@director ~]$ ls *rc

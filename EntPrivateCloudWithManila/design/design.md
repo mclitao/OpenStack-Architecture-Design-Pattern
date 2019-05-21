@@ -65,6 +65,29 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 |  |   | * rhel-7-server-rh-common-rpms |  | |
 |  | * Red Hat Ceph Storage 3.0  | * rhel-7-server-rhceph-3-osd-rpms |  | |
 
+### OpenStack コンポーネント
+
+導入されるコンポーネントの一覧。詳細は、[プロダクトガイドを参照](https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/html-single/product_guide/index)
+
+| No. | コンポーネント名称 | プロジェクト名 | 機能概要 | 導入 | 備考 |
+| :---: | :--------------- | :------------- | :------- | :--: | :--- |
+| 1. | OpenStack Dashboard | horizon | Web/UI | ◯ | |
+| 2. | OpenStack Identity | keystone | 認証サービス | ◯ | |
+| 3. | OpenStack Networking | neutron | 仮想ネットワーキング | ◯ | |
+| 4. | OpenStack Block Storage | cinder | ブロックストレージ | ◯ | |
+| 5. | OpenStack Compute | nova | 仮想VM | ◯ | Hypervisor は、KVM |
+| 6. | OpenStack Image Service | glance | 仮想ディスクイメージのレジストリ | ◯ | |
+| 7. | OpenStack Object Storage | swift | オブジェクトストア | ◯ | バックエンドは、controllerのローカルディスク |
+| 8. | OpenStack Telemetry | ceilometer | メータリング | ◯ | データストアは、gnocchi & ceph |
+| 9. | OpenStack Orchestration | heat| オーケストレーション | ◯ |  |
+| 10. | OpenStack Data Processing | sahara | Hadoop Cluster のデプロイ管理 | - |  |
+| 11. | OpenStack Bare Metal Provisioning | ironic | beametal as a service ( BMaaS ) | - |  |
+| 12. | OpenStack Shared-Filesystems-as-a-Service | manila | ファイル共有サービス | ◯ |  |
+| 13. | OpenStack DNS-as-a-Service | designate | ファイル共有サービス | ◯ |  |
+| 14. | OpenStack Key Manager Service  | barbican | 暗号化 鍵管理 | - | |
+| 15. | Red Hat OpenStack Platform Director | tripleo | OpenStack 環境の構成管理 | - | 占有(仮想 / 物理)ホスト上に構築 |
+
+
 ### OpenStack 可用性の考え方
 
 ![ OpenStack 可用性 ](./images/image0007.png)
@@ -220,3 +243,14 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 * Provisionig セグメントのサーバ収容ポートには、PortFast 設定が必要
 * STP は無効化する
 * 10GE ネットワークには、Jumboframe を設定（OSに設定すべきMTUサイズを確認する）
+
+### 関連ドキュメント
+
+* [Red Hat Enterprise Linux](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/)
+  * [Pacemaker](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/high_availability_add-on_overview/index)
+* [Red Hat OpenStack Platform](https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/)
+  * [Red Hat OpenStack Director(インストーラ＆構成管理)](https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/html-single/director_installation_and_usage/index)
+  * [Red Hat OpenStack High Availability](https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/html/understanding_red_hat_openstack_platform_high_availability/index)
+  * [Red Hat OpenStack Networking](https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/html/networking_guide/index)
+    * [Red Hat OpenStack LBaaS](https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/html/networking_guide/sec-lbaas)
+

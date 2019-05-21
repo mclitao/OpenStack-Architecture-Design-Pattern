@@ -77,7 +77,6 @@ parameter_defaults:
     devices:
     - /dev/sdb
     - /dev/sdc
-    - /dev/sdd
     osd_scenario: collocated
   CephPools:
     - name: images

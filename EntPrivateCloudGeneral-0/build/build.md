@@ -1,5 +1,5 @@
-
 # Undercloud/OverCloud用ハードウェア設定
+
 # Director用仮想サーバ作成
 
 

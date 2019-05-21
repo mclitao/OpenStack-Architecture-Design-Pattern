@@ -14,4 +14,7 @@ parameter_defaults:
   NeutronNetworkType: 'vxlan,vlan'
   NeutronTunnelTypes: 'vxlan'
 
+  # Barbican default plugin.
+  BarbicanSimpleCryptoGlobalDefault: true
 
+  

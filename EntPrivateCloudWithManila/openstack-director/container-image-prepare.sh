@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
-if [ $PWD != $HOME ] ; then echo "USAGE: $0 Must be run from $HOME"; exit 1 ; fi
 
-stack_name=adpcloud
+if [ $PWD != $HOME ] ; then echo "USAGE: $0 Must be run from $HOME"; exit 1 ; fi
 
 source ~/stackrc
 
-time openstack overcloud deploy --verbose \
- --templates /usr/share/openstack-tripleo-heat-templates \
- -n /usr/share/openstack-tripleo-heat-templates/network_data_ganesha.yaml \
+# Generate container image list definition.
+openstack overcloud container image prepare \
+ --namespace=registry.access.redhat.com/rhosp13 \
+ --push-destination=192.168.110.1:8787 \
+ --prefix=openstack- \
+ --tag-from-label {version}-{release}  \
+ --output-env-file=/home/stack/templates/overcloud_images.yaml \
+ --output-images-file /home/stack/local_registry_images.yaml \
  -e /home/stack/templates/roles_data.yaml \
  -e /home/stack/templates/global-config.yaml \
  -e /home/stack/templates/cloud-names.yaml \
@@ -24,9 +28,9 @@ time openstack overcloud deploy --verbose \
  -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-ansible.yaml \
  -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-mds.yaml \
  -e /usr/share/openstack-tripleo-heat-templates/environments/manila-cephfsganesha-config.yaml \
- -e /usr/share/openstack-tripleo-heat-templates/environments/cinder-backup.yaml \
- --timeout 210 \
- --ntp-server ntp.nict.jp \
- --log-file ./overcloud_deploy.log \
- --stack $stack_name
+ -e /usr/share/openstack-tripleo-heat-templates/environments/cinder-backup.yaml 
+
+# Pull and Push container images to local registry .
+sudo openstack overcloud container image upload \
+--config-file /home/stack/local_registry_images.yaml --verbose
 

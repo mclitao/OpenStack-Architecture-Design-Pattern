@@ -43,7 +43,7 @@ parameters:
     default: 0
     type: number
   ExternalNetCidr:
-    default: 10.208.81.0/24
+    default: 10.0.0.0/16
     description: Cidr for the external network.
     type: string
 

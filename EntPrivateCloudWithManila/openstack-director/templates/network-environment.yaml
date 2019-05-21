@@ -1,33 +1,6 @@
-#{
-#    "parameter_defaults": {
-#        "ControlPlaneDefaultRoute": "192.168.120.100", 
-#        "ControlPlaneSubnetCidr": "24", 
-#        "DnsServers": [
-#            "192.168.120.100"
-#        ], 
-#        "EC2MetadataIp": "192.168.120.100", 
-#        "ExternalAllocationPools": [
-#            {
-#                "end": "10.208.81.228", 
-#                "start": "10.208.81.224"
-#            }
-#        ], 
-#        "ExternalInterfaceDefaultRoute": "10.208.81.254", 
-#        "ExternalNetCidr": "10.208.81.0/24", 
-#        "NeutronExternalNetworkBridge": "", 
-#        "PublicVirtualFixedIPs": [
-#            {
-#                "ip_address": "10.208.81.229"
-#            }
-#        ]
-#    }
-#}
 resource_registry:
-#  OS::TripleO::Compute::Net::SoftwareConfig: /home/stack/templates/nic-configs/compute.yaml
-#  OS::TripleO::Controller::Net::SoftwareConfig: /home/stack/templates/nic-configs/controller.yaml
-#  OS::TripleO::CephStorage::Net::SoftwareConfig: /home/stack/templates/nic-configs/ceph-storage.yaml
   OS::TripleO::Compute::Net::SoftwareConfig: /home/stack/templates/nic-configs/compute-adp2.yaml
-  OS::TripleO::Controller::Net::SoftwareConfig: /home/stack/templates/nic-configs/controller-adp2.yaml
+  OS::TripleO::ControllerStorageNfs::Net::SoftwareConfig: /home/stack/templates/nic-configs/controller-adp2.yaml
   OS::TripleO::CephStorage::Net::SoftwareConfig: /home/stack/templates/nic-configs/ceph-storage-adp2.yaml
 
 parameter_defaults:
@@ -35,34 +8,37 @@ parameter_defaults:
   TenantNetCidr: 192.168.20.0/24
   StorageNetCidr: 192.168.30.0/24
   StorageMgmtNetCidr: 192.168.40.0/24
+  StorageNFSNetCidr: 192.168.50.0/24
   ManagementNetCidr: 192.168.120.0/24
-  ExternalNetCidr: 10.208.81.0/24
-  InternalApiAllocationPools: [{'start': '192.168.10.11', 'end': '192.168.10.223'}]
-  TenantAllocationPools: [{'start': '192.168.20.11', 'end': '192.168.20.223'}]
-  StorageAllocationPools: [{'start': '192.168.30.11', 'end': '192.168.30.223'}]
-  StorageMgmtAllocationPools: [{'start': '192.168.40.11', 'end': '192.168.40.223'}]
-  ManagementAllocationPools: [{'start': '192.168.120.10', 'end': '192.168.120.223'}]
+  ExternalNetCidr: 10.0.0.0/16
+  InternalApiAllocationPools: [{'start': '192.168.10.16', 'end': '192.168.10.23'}]
+  TenantAllocationPools: [{'start': '192.168.20.16', 'end': '192.168.20.23'}]
+  StorageAllocationPools: [{'start': '192.168.30.16', 'end': '192.168.30.23'}]
+  StorageMgmtAllocationPools: [{'start': '192.168.40.16', 'end': '192.168.40.23'}]
+  StorageNFSAllocationPools: [{'start': '192.168.50.16', 'end': '192.168.50.23'}]
+  ManagementAllocationPools: [{'start': '192.168.120.16', 'end': '192.168.120.23'}]
   # Leave room for floating IPs in the External allocation pool
-  ExternalAllocationPools: [{'start': '10.208.81.156', 'end': '10.208.81.169'}]
+  ExternalAllocationPools: [{'start': '10.0.0.16', 'end': '10.0.0.23'}]
   # Set to the router gateway on the external network
-  ExternalInterfaceDefaultRoute: 10.208.81.254
+  ExternalInterfaceDefaultRoute: 10.0.255.254
   # Gateway router for the provisioning network (or Undercloud IP)
-  ControlPlaneDefaultRoute: 192.168.110.10
+  ControlPlaneDefaultRoute: 192.168.110.1
   # The IP address of the EC2 metadata server. Generally the IP of the Undercloud
-  EC2MetadataIp: 192.168.110.4
+  EC2MetadataIp: 192.168.110.1
   # Define the DNS servers (maximum 2) for the overcloud nodes
-  DnsServers: ["10.208.81.1"]
+  DnsServers: ["8.8.8.8"]
   InternalApiNetworkVlanID: 201
   TenantNetworkVlanID: 202
   StorageNetworkVlanID: 203
   StorageMgmtNetworkVlanID: 204
+  StorageNFSNetworkVlanID: 205
   ManagementNetworkVlanID: 302
   ExternalNetworkVlanID: 101
   NeutronExternalNetworkBridge: "''"
 
-  #ControlFixedIPs: [{'ip_address':'192.168.201.101'}]
-  InternalApiVirtualFixedIPs: [{'ip_address':'192.168.10.224'}]
-  PublicVirtualFixedIPs: [{'ip_address':'10.208.81.244'}]
-  StorageVirtualFixedIPs: [{'ip_address':'192.168.30.224'}]
-  StorageMgmtVirtualFixedIPs: [{'ip_address':'192.168.40.224'}]
-  RedisVirtualFixedIPs: [{'ip_address':'192.168.10.225'}]
+  InternalApiVirtualFixedIPs: [{'ip_address':'192.168.10.248'}]
+  PublicVirtualFixedIPs: [{'ip_address':'10.0.255.248'}]
+  StorageVirtualFixedIPs: [{'ip_address':'192.168.30.248'}]
+  StorageMgmtVirtualFixedIPs: [{'ip_address':'192.168.40.248'}]
+  StorageNFSVirtualFixedIPs: [{'ip_address':'192.168.30.248'}]
+  RedisVirtualFixedIPs: [{'ip_address':'192.168.10.249'}]

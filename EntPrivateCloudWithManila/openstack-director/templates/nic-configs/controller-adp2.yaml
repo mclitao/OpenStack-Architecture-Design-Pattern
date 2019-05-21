@@ -14,6 +14,10 @@ parameters:
     default: ''
     description: IP address/subnet on the storage_mgmt network
     type: string
+  StorageNFSIpSubnet:
+    default: ''
+    description: IP address/subnet on the storage_nfs network
+    type: string
   InternalApiIpSubnet:
     default: ''
     description: IP address/subnet on the internal_api network
@@ -44,6 +48,10 @@ parameters:
     default: 204
     description: Vlan ID for the storage_mgmt network traffic.
     type: number
+  StorageNFSNetworkVlanID:
+    default: 205
+    description: Vlan ID for the storage_mgmt network traffic.
+    type: number
   InternalApiNetworkVlanID:
     default: 201
     description: Vlan ID for the internal_api network traffic.
@@ -64,7 +72,7 @@ parameters:
     description: The default route of the control plane network.
     type: string
   ExternalInterfaceDefaultRoute:
-    default: '10.208.81.254'
+    default: '10.0.255.254'
     description: default route for the external network
     type: string
   ControlPlaneSubnetCidr: # Override this via parameter_defaults
@@ -103,6 +111,8 @@ resources:
                 - ip_netmask: 169.254.169.254/32
                   next_hop:
                     get_param: EC2MetadataIp
+                - ip_netmask: 192.168.100.0/24
+                  next_hop: 192.168.110.1
               - type: ovs_bridge
                 name: bridge_name
                 dns_servers:
@@ -171,6 +181,12 @@ resources:
                   addresses:
                   - ip_netmask:
                       get_param: StorageMgmtIpSubnet
+                - type: vlan
+                  vlan_id:
+                    get_param: StorageNFSNetworkVlanID
+                  addresses:
+                  - ip_netmask:
+                      get_param: StorageNFSIpSubnet
 outputs:
   OS::stack_id:
     description: The OsNetConfigImpl resource.
