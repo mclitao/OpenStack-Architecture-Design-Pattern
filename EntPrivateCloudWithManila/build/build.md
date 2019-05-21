@@ -236,19 +236,21 @@ JSON形式のファイルにハードウェアの電源管理の情報を記述�
 #### 登録の確認
 ```
 (undercloud) [stack@director ~]$ openstack baremetal node list
-+--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
-| UUID                                 | Name    | Instance UUID                        | Power State | Provisioning State | Maintenance |
-+--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
-| 277bf0bd-f747-4aed-a176-c857a2fe6f27 | ctrl001 | 65f38a9b-a54b-4535-8863-8d7fca0a3431 | power on    | active             | False       |
-| abb31963-fd2f-4684-bdc5-102e1b48772a | ctrl002 | cea19755-786b-4218-b705-cb30e1c63dd5 | power on    | active             | False       |
-| ef61eac3-f7c9-47cf-a094-d48fadefc32c | ctrl003 | 1faea303-a62a-40bf-95ec-1f735a20197a | power on    | active             | False       |
-| 84df391b-bc59-4b4e-bda3-746fd30ed9ca | kvm001  | 828a4927-15a1-4a53-aefd-b113e74895f0 | power on    | active             | False       |
-| 905758c4-3fab-4ca7-a1d5-2a496397fb79 | kvm002  | 1231f55b-645c-4360-b2a0-b83c77ed0410 | power on    | active             | False       |
-| b3b5d7b2-a716-4e0a-be92-8e86874cc973 | kvm003  | 6bb98c39-e196-4e05-a313-72d57958c38a | power on    | active             | False       |
-| 6d100d8c-61e4-4aad-8846-04834ae5140c | ceph001 | 245a861f-9e10-45b8-a32f-c01142641de2 | power on    | active             | False       |
-| 477876b5-c2a1-4e61-b22a-acc69fb621bb | ceph002 | 6da6788b-5263-4635-b821-4a515d07583a | power on    | active             | False       |
-| f2799258-6a46-4c88-b3ae-993a5f792f04 | ceph003 | 8df5d224-71ef-45cf-ad47-e250064616f8 | power on    | active             | False       |
-+--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
++--------------------------------------+---------+---------------+-------------+--------------------+-------------+                                                                                               
+| UUID                                 | Name    | Instance UUID | Power State | Provisioning State | Maintenance |                                                                                               
++--------------------------------------+---------+---------------+-------------+--------------------+-------------+                                                                                               
+| 440a258b-445d-4b4c-878f-48c45ced87d7 | ctrl001 | None          | power off   | available          | False       |                                                                                               
+| 9b6afe2f-938e-4e0a-b45b-d6e78f580651 | ctrl002 | None          | power off   | available          | False       |                                                                                               
+| e69e3c20-bea8-479a-94f4-32208dd67a10 | ctrl003 | None          | power off   | available          | False       |                                                                                               
+| cfcfb9a5-b930-4614-befa-a7fba4f7178a | kvm001  | None          | power off   | available          | False       |                                                                                               
+| b68441e0-9eb7-43e9-8d1c-32cb4897ef47 | kvm002  | None          | power off   | available          | False       |                                                                                               
+| 96a8cf7f-879b-495f-99d3-fa7d76f94397 | kvm003  | None          | power off   | available          | False       |                                                                                               
+| b1921cd7-6298-4fcf-8b4d-0367308f7a5e | ceph001 | None          | power off   | available          | False       |                                                                                               
+| 4d2a3a71-fff8-4490-8700-56d547730b41 | ceph002 | None          | power off   | available          | False       |                                                                                               
+| c9c2d590-b706-4542-abe7-e57d59b8dfcc | ceph003 | None          | power off   | available          | False       |                                                                                               
++--------------------------------------+---------+---------------+-------------+--------------------+-------------+ 
+(undercloud) [stack@director ~]$ 
+
 ```
 
 

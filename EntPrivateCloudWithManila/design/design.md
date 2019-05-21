@@ -83,7 +83,7 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 | 10. | OpenStack Data Processing | sahara | Hadoop Cluster のデプロイ管理 | - |  |
 | 11. | OpenStack Bare Metal Provisioning | ironic | beametal as a service ( BMaaS ) | - |  |
 | 12. | OpenStack Shared-Filesystems-as-a-Service | manila | ファイル共有サービス | ◯ |  |
-| 13. | OpenStack DNS-as-a-Service | designate | ファイル共有サービス | ◯ |  |
+| 13. | OpenStack DNS-as-a-Service | designate | DNS as a Service | - | tech preview  |
 | 14. | OpenStack Key Manager Service  | barbican | 暗号化 鍵管理 | - | |
 | 15. | Red Hat OpenStack Platform Director | tripleo | OpenStack 環境の構成管理 | - | 占有(仮想 / 物理)ホスト上に構築 |
 
