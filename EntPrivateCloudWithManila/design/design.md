@@ -1,4 +1,4 @@
-# 企業プライベートIaaS 標準構成（設計編）
+# 企業プライベートIaaS ファイル共有サービス(CephFS NFS-ganesha) （設計編）
 
 ## Red Hat OpenStack & ceph Storage 構成 考え方
 
@@ -83,7 +83,7 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 | 10. | OpenStack Data Processing | sahara | Hadoop Cluster のデプロイ管理 | - |  |
 | 11. | OpenStack Bare Metal Provisioning | ironic | beametal as a service ( BMaaS ) | - |  |
 | 12. | OpenStack Shared-Filesystems-as-a-Service | manila | ファイル共有サービス | ◯ |  |
-| 13. | OpenStack DNS-as-a-Service | designate | DNS as a Service | - | tech preview |
+| 13. | OpenStack DNS-as-a-Service | designate | DNS as a Service | - | tech preview  |
 | 14. | OpenStack Key Manager Service  | barbican | 暗号化 鍵管理 | - | |
 | 15. | Red Hat OpenStack Platform Director | tripleo | OpenStack 環境の構成管理 | - | 占有(仮想 / 物理)ホスト上に構築 |
 
@@ -97,6 +97,16 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 ### ceph Storage の可用性の考え方
 
 ![ OpenStack 可用性 ](./images/image0008.png)
+
+<br>
+
+### manila ( CephFS NFS-ganesha ) のアーキテクチャ
+
+  * Client(vmインスタンス)から、共有ボリュームへのアクセスは、NFS v4 を使用する
+  * NFS-ganesha は、NFS リクエストを、CephFS native に変換し、ceph-MSD へ転送する
+  * ceph-MSD は、RBD で、ceph-OSD 上のデータへアクセスする。
+
+![ OpenStack 可用性 ](./images/image0009.png)
 
 <br>
 
@@ -123,6 +133,7 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 | Tenant | 202 | 192.168.20.0/24 | 10G | ◯ | クラウド利用者に対し、テナント内部のプライベートネットワークをオーバレイさせる。| - | ◯ | ◯ | - |
 | Storage | 203 | 192.168.30.0/24 | 10G | ◯ | ゲストVMのBlock Volumeアクセス等、Ceph クラスターへのアクセスに使用する。 | - | ◯ | ◯ | ◯ |
 | Storage Management | 204 | 192.168.40.0/24 | 10G | ◯ | Object Store サービスや、Ceph クラスターの内部同期通信に使用する| - | ◯ | - | ◯ |
+| Storage NFS | 205 | 192.168.50.0/24 | 10G | ◯ | VMインスタンスとファイル共有サービス間のデータアクセス | - | ◯ | ◯ | - |
 | IPMI | 300 | 192.168.100.0/24 | 1G |  | ベアメタルサーバ(controller , compute , ceph-storage )に対し、電源コントロール等を行う. <br>  構築時のPXEブート電源コントロール <br>  pacemaker のstonith  | ◯ | ◯ [1] | ◯ [1] | ◯ [1] |
 | Provisioning | 301 | 192.168.110.0/24 | 1G |  |  構築時や構成変更時に、Director(undercloud) から、各ベアメタルサーバに対し、アクセスを行う | ◯ | ◯ | ◯ | ◯ |
 | Management | 302 | 192.168.120.0/24 | 1G |  | システム管理者が、運用管理においてベアメタルサーバに対し、ssh 接続を行う  | ◯ | ◯ | ◯ | ◯ |
@@ -135,10 +146,10 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 
 | 構成パターン | 想定条件 | 10G 集約 | 10G 分離 | 1G 集約 | 1G 分離 |
 | :----------: | :------ | :------ | :------ | :----- | :----- |
-| 最小構成 | クラウドの利用者の、内部外部の通信量並びに、<br> ディスクアクセスが穏やかで、ネットワーク干渉<br>による速度低下も許容させる | <ul> <li> Internal API </li> <li> Tenant </li> <li> Storage </li> <li> Storage Management </li> </ul> | - | - | <ul> <li> External </li> <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
-| 集約構成 | ネットワーク干渉による速度低下がある程度<br>許容させるが、DBのような比較的ディスク<br>アクセスが多いワークロードが配置される | <ul> <li> Group1 <ul> <li> Internal API </li> <li> Tenant </li> </ul> <li> Group2 <ul> <li> Storage </li> <li> Storage Management </li> </ul> </li> </ul> | - | - | <ul> <li> External </li> <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
-| 占有構成 | ネットワークトラヒックおよびディスク<br>アクセスにおいて、できるだけ速度低下を回避する | - | <ul> <li> Tenant </li> <li> Storage </li> <li> Storage Management </li> </ul> | - | <ul> <li> External </li> <li> Internal API </li>  <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
-| 高許容構成 | 利用規模の拡大、ワークロードのバリ<br>エーションに対して、許容度の高い構成 | - | <ul> <li> External </li> <li> Internal API </li> <li> Tenant </li> <li> Storage </li> <li> Storage Management </ul> | - | <ul> <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
+| 最小構成 | クラウドの利用者の、内部外部の通信量並びに、<br> ディスクアクセスが穏やかで、ネットワーク干渉<br>による速度低下も許容させる | <ul> <li> Internal API </li> <li> Tenant </li> <li> Storage </li> <li> Storage Management </li> <li> Storage NFS </li>  </ul> | - | - | <ul> <li> External </li> <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
+| 集約構成 | ネットワーク干渉による速度低下がある程度<br>許容させるが、DBのような比較的ディスク<br>アクセスが多いワークロードが配置される | <ul> <li> Group1 <ul> <li> Internal API </li> <li> Tenant </li> </ul> <li> Group2 <ul> <li> Storage </li> <li> Storage Management </li> <li> Storage NFS </li>  </ul> </li> </ul> | - | - | <ul> <li> External </li> <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
+| 占有構成 | ネットワークトラヒックおよびディスク<br>アクセスにおいて、できるだけ速度低下を回避する | - | <ul> <li> Tenant </li> <li> Storage </li> <li> Storage Management </li> <li> Storage NFS </li>  </ul> | - | <ul> <li> External </li> <li> Internal API </li>  <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
+| 高許容構成 | 利用規模の拡大、ワークロードのバリ<br>エーションに対して、許容度の高い構成 | - | <ul> <li> External </li> <li> Internal API </li> <li> Tenant </li> <li> Storage </li> <li> Storage Management </li> <li> Storage NFS</li> </ul> | - | <ul> <li> IPMI </li> <li> Provisioning </li> <li> Management </li> </ul> |
 
 
 ### 環境定義 および 想定サイジング
@@ -235,10 +246,11 @@ OpenStack 環境には、役割／用途に応じて、物理サーバを用意�
 
 ### 関連ドキュメント
 
-* [Red Hat Enterprise Linux](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/) 
+* [Red Hat Enterprise Linux](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/)
   * [Pacemaker](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/high_availability_add-on_overview/index)
 * [Red Hat OpenStack Platform](https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/)
   * [Red Hat OpenStack Director(インストーラ＆構成管理)](https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/html-single/director_installation_and_usage/index)
   * [Red Hat OpenStack High Availability](https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/html/understanding_red_hat_openstack_platform_high_availability/index)
   * [Red Hat OpenStack Networking](https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/html/networking_guide/index)
     * [Red Hat OpenStack LBaaS](https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/html/networking_guide/sec-lbaas)
+

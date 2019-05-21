@@ -1,0 +1,102 @@
+# Environment file demonstrating how to pre-assign IPs to all node types
+resource_registry:
+  OS::TripleO::ControllerStorageNfs::Ports::ExternalPort: /home/stack/templates/ports/external_from_pool.yaml
+  OS::TripleO::ControllerStorageNfs::Ports::InternalApiPort: /home/stack/templates/ports/internal_api_from_pool.yaml
+  OS::TripleO::ControllerStorageNfs::Ports::StoragePort: /home/stack/templates/ports/storage_from_pool.yaml
+  OS::TripleO::ControllerStorageNfs::Ports::StorageMgmtPort: /home/stack/templates/ports/storage_mgmt_from_pool.yaml
+  OS::TripleO::ControllerStorageNfs::Ports::TenantPort: /home/stack/templates/ports/tenant_from_pool.yaml
+  # Management network is optional and disabled by default
+  OS::TripleO::ControllerStorageNfs::Ports::ManagementPort: /home/stack/templates/ports/management_from_pool.yaml
+
+  OS::TripleO::Compute::Ports::ExternalPort: /home/stack/templates/ports/noop.yaml
+  OS::TripleO::Compute::Ports::InternalApiPort: /home/stack/templates/ports/internal_api_from_pool.yaml
+  OS::TripleO::Compute::Ports::StoragePort: /home/stack/templates/ports/storage_from_pool.yaml
+  OS::TripleO::Compute::Ports::StorageMgmtPort: /home/stack/templates/ports/noop.yaml
+  OS::TripleO::Compute::Ports::TenantPort: /home/stack/templates/ports/tenant_from_pool.yaml
+  OS::TripleO::Compute::Ports::ManagementPort: /home/stack/templates/ports/management_from_pool.yaml
+
+  OS::TripleO::CephStorage::Ports::ExternalPort: /home/stack/templates/ports/noop.yaml
+  OS::TripleO::CephStorage::Ports::InternalApiPort: /home/stack/templates/ports/noop.yaml
+  OS::TripleO::CephStorage::Ports::StoragePort: /home/stack/templates/ports/storage_from_pool.yaml
+  OS::TripleO::CephStorage::Ports::StorageMgmtPort: /home/stack/templates/ports/storage_mgmt_from_pool.yaml
+  OS::TripleO::CephStorage::Ports::TenantPort: /home/stack/templates/ports/noop.yaml
+  OS::TripleO::CephStorage::Ports::ManagementPort: /home/stack/templates/ports/management_from_pool.yaml
+
+
+parameter_defaults:
+  ControllerStorageNfsIPs:
+    # Each controller will get an IP from the lists below, first controller, first IP
+    external:
+    - 10.0.255.24
+    - 10.0.255.25
+    - 10.0.255.26
+    internal_api:
+    - 192.168.10.24
+    - 192.168.10.25
+    - 192.168.10.26
+    tenant:
+    - 192.168.20.24
+    - 192.168.20.25
+    - 192.168.20.26
+    storage:
+    - 192.168.30.24
+    - 192.168.30.25
+    - 192.168.30.26
+    storage_mgmt:
+    - 192.168.40.24
+    - 192.168.40.25
+    - 192.168.40.26
+    storage_nfs:
+    - 192.168.50.24
+    - 192.168.50.25
+    - 192.168.50.26
+    management:
+    - 192.168.120.24
+    - 192.168.120.25
+    - 192.168.120.26
+  ComputeIPs:
+    # Each compute will get an IP from the lists below, first compute, first IP
+    internal_api:
+    - 192.168.10.32
+    - 192.168.10.33
+    - 192.168.10.34
+    #- 192.168.10.35
+    #- 192.168.10.36
+    tenant:
+    - 192.168.20.32
+    - 192.168.20.33
+    - 192.168.20.34
+    #- 192.168.20.35
+    #- 192.168.20.36
+    storage:
+    - 192.168.30.32
+    - 192.168.30.33
+    - 192.168.30.34
+    #- 192.168.30.35
+    #- 192.168.30.36
+    management:
+    - 192.168.120.32
+    - 192.168.120.33
+    - 192.168.120.34
+    #- 192.168.120.35
+    #- 192.168.120.36
+  CephStorageIPs:
+    # Each ceph node will get an IP from the lists below, first node, first IP
+    storage:
+    - 192.168.30.232
+    - 192.168.30.233
+    - 192.168.30.234
+    #- 192.168.30.235
+    #- 192.168.30.236
+    storage_mgmt:
+    - 192.168.40.232
+    - 192.168.40.233
+    - 192.168.40.234
+    #- 192.168.40.235
+    #- 192.168.40.236
+    management:
+    - 192.168.120.232
+    - 192.168.120.233
+    - 192.168.120.234
+    #- 192.168.120.235
+    #- 192.168.120.236

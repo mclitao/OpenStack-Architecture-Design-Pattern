@@ -1,0 +1,9 @@
+# Defines the cloud names based on parameters given.
+
+parameter_defaults:
+  CloudName: adp.local
+  CloudNameInternal: internal.adp.local
+  CloudNameStorage: storage.adp.local
+  CloudNameStorageManagement: storagemgmt.adp.local
+  CloudNameCtlplane: ctlplane.adp.local
+  CloudDomain: adpn.local
