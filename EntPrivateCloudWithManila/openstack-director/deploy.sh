@@ -8,7 +8,7 @@ source ~/stackrc
 time openstack overcloud deploy --verbose \
  --templates /usr/share/openstack-tripleo-heat-templates \
  -n /usr/share/openstack-tripleo-heat-templates/network_data_ganesha.yaml \
- -e /home/stack/templates/roles_data.yaml \
+ -r /home/stack/templates/roles_data.yaml \
  -e /home/stack/templates/global-config.yaml \
  -e /home/stack/templates/cloud-names.yaml \
  -e /home/stack/templates/scheduler_hints_env.yaml \
